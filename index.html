@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cubik Estiba</title>
+<meta name="theme-color" content="#1E2229">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap">
+<style>
+:root{
+  --bg:#F4F5F7; --card:#FFFFFF; --ink:#1E2229; --muted:#4F5864; --line:#C3C9D1;
+  --kraft:#D9A05B; --kraft-dk:#C28B46; --kraft-edge:#7A4E1C; --traba:#B85D19; --traba-dk:#8A420E;
+  --steel:#2C3338; --xray:#EEF1F5; --sel:#FFE6B8;
+  --red:#D92D20; --red-bg:#FEF3F2; --green:#079455; --green-bg:#ECFDF3;
+  --f-disp:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Barlow",Arial,Helvetica,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.4;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+button,a.btn{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:focus-visible{outline:3px solid var(--traba);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto;display:grid;gap:14px}
+
+/* Encabezado */
+.top{display:flex;align-items:center;gap:12px;padding-block:16px 4px}
+.mark{width:44px;height:44px;flex:none}
+.brand{font-family:var(--f-disp);font-weight:800;font-size:30px;line-height:1;letter-spacing:.02em}
+.brand small{display:block;font-family:var(--f-body);font-weight:600;font-size:14px;color:var(--muted);letter-spacing:0;margin-top:3px}
+
+/* Tarjetas */
+.card{background:var(--card);border:2px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:14px;min-width:0}
+.step-h{display:flex;align-items:center;gap:10px;margin:0;font-family:var(--f-disp);font-weight:800;font-size:23px;text-transform:uppercase;letter-spacing:.03em;line-height:1.1}
+.step-n{width:34px;height:34px;flex:none;border-radius:6px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:21px}
+.sub{font-family:var(--f-disp);font-weight:700;font-size:17px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0}
+.hint{margin:0;color:var(--muted);font-size:15px;font-weight:500}
+.field{display:grid;gap:8px}
+
+/* Botones */
+.btn{min-height:56px;padding:6px 10px;border:2px solid var(--ink);background:#fff;border-radius:8px;
+  font-family:var(--f-disp);font-weight:700;font-size:20px;line-height:1.05;display:flex;align-items:center;justify-content:center;gap:8px;
+  text-align:center;cursor:pointer;user-select:none;-webkit-user-select:none;text-decoration:none;color:var(--ink)}
+.btn:active{transform:translateY(1px)}
+.btn[aria-pressed="true"]{background:var(--ink);color:#fff}
+.btn small{display:block;font-family:var(--f-body);font-weight:600;font-size:13px;opacity:.8}
+.counter{display:grid;grid-template-columns:68px minmax(0,1fr) 68px;gap:10px}
+.counter .btn{font-size:38px;font-weight:800;min-height:72px}
+.num{width:100%;min-width:0;min-height:72px;border:2px solid var(--line);border-radius:8px;background:var(--bg);
+  font-family:var(--f-disp);font-weight:800;font-size:46px;text-align:center;color:var(--ink);font-variant-numeric:tabular-nums}
+.num:focus,.txt:focus{border-color:var(--ink);outline:none}
+.txt{width:100%;min-height:56px;border:2px solid var(--line);border-radius:8px;background:var(--bg);padding:0 14px;font:600 19px var(--f-body);color:var(--ink)}
+.numbox{display:grid;place-items:center;min-height:72px;border:2px solid var(--line);border-radius:8px;background:var(--bg);
+  font-family:var(--f-disp);font-weight:800;font-size:46px;line-height:1;font-variant-numeric:tabular-nums}
+.numbox span{font-size:15px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.grid{display:grid;gap:8px}
+.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g5 .btn,.g3 .btn{font-size:22px;font-weight:800}
+.tons{font-family:var(--f-disp);font-weight:700;font-size:22px;text-align:center;margin:0}
+.tons b{font-size:30px}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink);border-radius:8px;overflow:hidden}
+.seg .btn{border:0;border-radius:0;min-height:52px}
+.seg .btn+.btn{border-left:2px solid var(--ink)}
+.truck .btn{flex-direction:column;gap:2px;min-height:64px}
+.mode .btn{min-height:64px;font-size:21px}
+
+/* Alerta de báscula */
+.alert{border-radius:10px;padding:16px;display:grid;gap:10px;color:#fff;border:2px solid transparent}
+.alert.bad{background:var(--red)}
+.alert.ok{background:var(--green)}
+.alert p{margin:0;font-family:var(--f-disp);font-weight:800;font-size:25px;line-height:1.15}
+.alert .meta{font-family:var(--f-body);font-weight:600;font-size:15px;opacity:.95}
+.meter{height:14px;border-radius:7px;background:rgba(255,255,255,.3);overflow:hidden;position:relative}
+.meter i{position:absolute;inset:0 auto 0 0;background:#fff;border-radius:7px}
+.warn{background:var(--red-bg);border:2px solid var(--red);color:var(--red);border-radius:8px;padding:10px 12px;font-weight:700;font-size:16px}
+.tally{border-radius:8px;padding:10px 12px;font-weight:700;font-size:17px;border:2px solid}
+.tally.bad{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.tally.ok{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+
+/* Vistas */
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.tabs .btn{flex-direction:column;min-height:68px;font-size:16px;gap:4px;padding:6px 2px}
+.tabs svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.cap{margin:0;font-weight:700;font-size:17px}
+.cap b{font-family:var(--f-disp);font-size:22px}
+.draw{overflow-x:auto;border:2px solid var(--line);border-radius:8px;background:#fff;padding:6px}
+.draw svg{display:block;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:15px;font-weight:600}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:22px;height:14px;border-radius:3px;border:1.5px solid var(--kraft-edge);background:var(--kraft)}
+.sw.tr{background:repeating-linear-gradient(45deg,var(--traba) 0 4px,var(--traba-dk) 4px 6px);border-color:var(--traba-dk)}
+.strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.rowctl{flex:none;width:64px;display:grid;gap:4px;text-align:center}
+.rowctl .btn{min-height:52px;font-size:22px;padding:0}
+.rowctl .val{border:2px solid var(--line);border-radius:8px;padding:4px 0;cursor:pointer;background:#fff}
+.rowctl .val b{display:block;font-family:var(--f-disp);font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
+.rowctl .val small{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase}
+.rowctl.on .val{border-color:var(--ink);background:var(--sel)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.chips .btn{flex:none;min-width:56px;min-height:52px;font-size:20px}
+.split{display:flex;height:64px;border:2px solid var(--ink);border-radius:8px;overflow:hidden;font-family:var(--f-disp);font-weight:800}
+.split div{display:flex;flex-direction:column;justify-content:center;padding:0 12px;min-width:0;white-space:nowrap}
+.split .fr{background:var(--steel);color:#fff}
+.split .bk{background:var(--kraft);color:var(--ink);align-items:flex-end;text-align:right}
+.split b{font-size:30px;line-height:1}
+.split small{font-family:var(--f-body);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.verdict{font-family:var(--f-disp);font-weight:800;font-size:23px;margin:0;display:flex;align-items:center;gap:8px}
+.verdict.ok{color:var(--green)} .verdict.bad{color:var(--red)}
+
+/* Hoja de ruta */
+.route{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:r}
+.route li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:start;font-size:19px;font-weight:600;line-height:1.3;counter-increment:r}
+.route li::before{content:counter(r);width:36px;height:36px;border-radius:50%;background:var(--kraft);color:var(--ink);border:2px solid var(--kraft-edge);
+  display:grid;place-items:center;font-family:var(--f-disp);font-weight:800;font-size:20px}
+.route li.tr::before{background:var(--traba);border-color:var(--traba-dk);color:#fff}
+.route li.ok::before{background:var(--green);border-color:var(--green);color:#fff}
+.route li.bad::before{background:var(--red);border-color:var(--red);color:#fff}
+.route b{font-family:var(--f-disp);font-weight:800;font-size:23px}
+.wa{background:var(--green);border-color:var(--green);color:#fff;min-height:64px;font-size:23px}
+.wa svg{width:26px;height:26px;fill:#fff}
+.sum{background:var(--ink);color:#fff;border-radius:8px;padding:12px 14px;font-family:var(--f-disp);font-weight:800;font-size:27px;line-height:1.15;text-wrap:balance}
+.sum small{display:block;font-family:var(--f-body);font-weight:700;font-size:13px;letter-spacing:.08em;color:var(--kraft);margin-bottom:2px}
+.copied{font-weight:700;color:var(--green);text-align:center;margin:0;min-height:1.4em}
+textarea.fallback{width:100%;min-height:160px;font:15px/1.4 var(--f-body);border:2px solid var(--line);border-radius:8px;padding:8px}
+
+/* Dibujos SVG */
+svg text{font-family:var(--f-disp);font-weight:700}
+.bag{fill:var(--kraft);stroke:var(--kraft-edge);stroke-width:1}
+.bag.alt{fill:var(--kraft-dk)}
+.bag.part{stroke-dasharray:3 2}
+.bag.top{stroke:var(--traba-dk);stroke-width:2}
+.seam{stroke:var(--kraft-edge);stroke-width:.8;opacity:.55}
+.traba{fill:url(#hx);stroke:var(--traba-dk);stroke-width:1.2}
+.trs{fill:var(--traba);stroke:var(--traba-dk);stroke-width:1.2}
+.trl{stroke:#fff;stroke-width:1;opacity:.45}
+.veil{fill:#fff;opacity:.6}
+.rowsep{stroke:var(--steel);stroke-width:1.5}
+.cab{fill:var(--steel)}
+.win{fill:#DCE2E8}
+.cabline{stroke:#59636B;stroke-width:1.5;fill:none}
+.chassis{fill:var(--steel)}
+.xray{fill:var(--xray)}
+.wall{fill:none;stroke:var(--steel);stroke-width:2.5}
+.wallb{fill:#D5DAE0;stroke:var(--steel);stroke-width:2}
+.door{fill:#E3E7EC;stroke:var(--steel);stroke-width:2}
+.post{stroke:var(--steel);stroke-width:1;stroke-dasharray:4 4;opacity:.5}
+.gate{stroke:var(--steel);stroke-width:5}
+.tire{fill:var(--steel)}
+.hub{fill:#9AA3AD}
+.selcol{fill:var(--sel)}
+.hit{fill:transparent;cursor:pointer}
+.lbl{fill:var(--muted);font-size:11px;letter-spacing:.08em}
+.rn{fill:var(--muted);font-size:13px;text-anchor:middle}
+.rn.on{fill:var(--ink);font-size:15px}
+.tnum{fill:#fff;font-size:12px;text-anchor:middle;font-weight:800}
+.pnum{fill:var(--ink);font-size:12px;text-anchor:middle}
+.cnt{fill:var(--ink);font-size:12px;text-anchor:middle}
+.dim{stroke:var(--ink);stroke-width:1.5;fill:none}
+.dimn{fill:var(--ink);font-size:20px;font-weight:800}
+.dimt{fill:var(--muted);font-size:11px}
+.dimc{fill:var(--ink);font-size:13px;text-anchor:middle}
+.over{stroke:var(--red);stroke-width:2.5;stroke-dasharray:6 4}
+.overt{fill:var(--red);font-size:12px;font-weight:800}
+.tlab{fill:var(--traba);font-size:13px;font-weight:800;text-anchor:middle}
+.bar{fill:var(--kraft);stroke:var(--kraft-edge)}
+.zone{fill:var(--green);opacity:.22}
+.mk-ok{fill:var(--green)} .mk-bad{fill:var(--red)}
+.base{stroke:var(--steel);stroke-width:3}
+@media (prefers-reduced-motion:reduce){.btn:active{transform:none}}
+@media (max-width:380px){.counter{grid-template-columns:60px minmax(0,1fr) 60px}.tabs .btn{font-size:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <svg class="mark" viewBox="0 0 44 44" aria-hidden="true">
+      <rect x="1" y="1" width="42" height="42" rx="8" fill="#1E2229"/>
+      <rect x="7" y="25" width="14" height="8" rx="2" fill="#D9A05B"/><rect x="23" y="25" width="14" height="8" rx="2" fill="#C28B46"/>
+      <rect x="7" y="16" width="14" height="8" rx="2" fill="#C28B46"/><rect x="23" y="16" width="14" height="8" rx="2" fill="#D9A05B"/>
+      <rect x="14" y="8" width="16" height="7" rx="2" fill="#B85D19"/>
+    </svg>
+    <div class="brand">CUBIK<small>Cubicaje y estiba de bultos</small></div>
+  </header>
+
+  <!-- 1. Bultos -->
+  <section class="card" aria-labelledby="h1">
+    <h2 class="step-h" id="h1"><span class="step-n">1</span>Bultos a cargar</h2>
+    <div class="counter">
+      <button class="btn" id="nMinus" aria-label="Quitar un bulto">−</button>
+      <input class="num" id="nInput" inputmode="numeric" pattern="[0-9]*" aria-label="Número de bultos" autocomplete="off">
+      <button class="btn" id="nPlus" aria-label="Agregar un bulto">+</button>
+    </div>
+    <p class="tons" id="tonsLine"></p>
+    <div class="grid g5" id="presets"></div>
+    <div class="field">
+      <p class="sub">Peso de cada bulto</p>
+      <div class="grid g3" id="kgChips"></div>
+    </div>
+    <div class="field">
+      <label class="sub" for="prod">Qué se carga (opcional)</label>
+      <input class="txt" id="prod" type="text" placeholder="Carga general" autocomplete="off" maxlength="40">
+    </div>
+  </section>
+
+  <!-- 2. Camión -->
+  <section class="card" aria-labelledby="h2">
+    <h2 class="step-h" id="h2"><span class="step-n">2</span>Espacio del camión</h2>
+    <button class="btn" id="tAuto">Escoger camión solo según el peso</button>
+    <p class="hint" id="truckHint"></p>
+    <div class="grid g2 truck" id="trucks"></div>
+    <div class="field">
+      <p class="sub">Largo: filas de fondo a compuerta</p>
+      <div class="counter">
+        <button class="btn" id="lMinus" aria-label="Una fila menos">−</button>
+        <div class="numbox" id="lBox"></div>
+        <button class="btn" id="lPlus" aria-label="Una fila más">+</button>
+      </div>
+      <div class="grid g5" id="lChips"></div>
+    </div>
+    <div class="field">
+      <p class="sub">Ancho: bultos lado a lado</p>
+      <div class="grid g3" id="wChips"></div>
+    </div>
+  </section>
+
+  <!-- 3. Modo -->
+  <section class="card" aria-labelledby="h3">
+    <h2 class="step-h" id="h3"><span class="step-n">3</span>Modo de ajuste</h2>
+    <div class="grid g2 mode">
+      <button class="btn" id="mAuto">Repartir parejo</button>
+      <button class="btn" id="mMan">▲▼ Ajustar a mano</button>
+    </div>
+    <p class="hint" id="modeHint"></p>
+    <div id="tally" hidden></div>
+  </section>
+
+  <!-- Báscula -->
+  <div id="alert" class="alert" role="status" aria-live="polite"></div>
+  <div id="tallWarn" class="warn" hidden></div>
+
+  <!-- Vistas -->
+  <section class="card" aria-label="Dibujo de la carga">
+    <div class="tabs" id="tabs">
+      <button class="btn" data-view="side"><svg viewBox="0 0 28 28"><path d="M2 20v-7l3-4h5v11M10 6h16v14H10"/><circle cx="7" cy="21.5" r="2.5"/><circle cx="21" cy="21.5" r="2.5"/></svg>Lateral</button>
+      <button class="btn" data-view="top"><svg viewBox="0 0 28 28"><rect x="9" y="6" width="17" height="16"/><path d="M15 6v16M20.5 6v16M9 14h17M2 9h5v10H2z"/></svg>Arriba</button>
+      <button class="btn" data-view="back"><svg viewBox="0 0 28 28"><path d="M8 4h12v15H8zM8 4 3 6v13h5M20 4l5 2v13h-5M11 19v4M17 19v4"/><path d="M10 15h8M10 11h8"/></svg>Compuerta</button>
+      <button class="btn" data-view="axle"><svg viewBox="0 0 28 28"><path d="M14 4v17M5 22h18M5 8h18M5 8l-3 7h6zM23 8l-3 7h6z"/></svg>Ejes</button>
+    </div>
+    <div id="view" class="field"></div>
+    <div id="manual" class="field" hidden>
+      <p class="sub">Subir o bajar bultos por fila</p>
+      <div class="strip" id="strip"></div>
+    </div>
+  </section>
+
+  <!-- Hoja de ruta -->
+  <section class="card" aria-labelledby="h4">
+    <h2 class="step-h" id="h4"><span class="step-n">✓</span>Hoja de cargue</h2>
+    <div class="sum" id="sum"></div>
+    <ol class="route" id="route"></ol>
+    <a class="btn wa" id="waBtn" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3z"/></svg>
+      Compartir carga por WhatsApp
+    </a>
+    <button class="btn" id="copyBtn">Copiar texto</button>
+    <p class="copied" id="copied" aria-live="polite"></p>
+    <textarea class="fallback" id="fallback" hidden readonly aria-label="Texto de la carga"></textarea>
+  </section>
+
+</div>
+
+<script>
+const BAG_KG = [25, 40, 50];
+const TRUCKS = {
+  turbo:    { name: 'Turbo',        t: 4.5, L: 6, techo: 10, ax: 'single' },
+  sencillo: { name: 'Sencillo',     t: 9,   L: 8, techo: 12, ax: 'single' },
+  doble:    { name: 'Doble troque', t: 17,  L: 9, techo: 12, ax: 'tandem' },
+  mula:     { name: 'Mula',         t: 32,  L: 12, techo: 13, ax: 'mula' }
+};
+const PRESETS = [100, 150, 200, 400, 600];
+const DEFAULT_PROD = 'Carga general';
+const S = { N: 300, type: 'doble', L: 9, W: 5, wManual: false, mode: 'auto', rows: [], sel: 4, view: 'side', prod: 'Carga general', kg: 50, autoTruck: true };
+
+const $ = id => document.getElementById(id);
+const fmtT = t => (Math.round(t * 10) / 10).toString().replace('.', ',');
+const sum = a => a.reduce((x, y) => x + y, 0);
+const lay1 = n => ({ n, p: Math.floor(n / S.W), t: n % S.W });
+
+// Posición y orientación del remate superior según el ancho y los bultos sobrantes
+function topLayer(w, t) {
+  if (t <= 0) return { crossed: true, slots: [] };
+  if (t <= 3) {
+    const size = Math.min(1.8, w / t);
+    if (t === 1) return { crossed: true, slots: [[(w - size) / 2, size]] };
+    const gap = (w - t * size) / (t - 1);
+    return { crossed: true, slots: [...Array(t)].map((_, i) => [i * (size + gap), size]) };
+  }
+  const order = [];
+  for (let a = 0, b = w - 1; a <= b; a++, b--) { order.push(a); if (a !== b) order.push(b); }
+  return { crossed: false, slots: order.slice(0, t).sort((a, b) => a - b).map(l => [l, 1]) };
+}
+function topText(w, t) {
+  if (topLayer(w, t).crossed) {
+    if (t === 1) return '+ **1 atravesado** encima, en la mitad de la fila.';
+    if (t === 2) return '+ **2 atravesados** encima, uno a cada lado' + (w - 3.6 > 0.3 ? ' y el centro libre.' : '.');
+    return `+ **${t} atravesados** encima, repartidos parejo a lo ancho.`;
+  }
+  const a = Math.ceil(t / 2), b = Math.floor(t / 2);
+  return `+ **${t} bultos encima a lo largo**, ` + (a === b ? `${a} a cada lado` : `${a} a un lado y ${b} al otro`) + (w === t ? '.' : a === b ? ' y el centro libre.' : ' y un espacio libre.');
+}
+const deName = k => k === 'mula' ? 'de la mula' : 'del ' + TRUCKS[k].name.toLowerCase();
+const topShort = (w, t) => topLayer(w, t).crossed ? `${t} ${plural(t, 'atravesado', 'atravesados')}` : `${t} encima a lo largo`;
+
+function save() { try { localStorage.setItem('cubik.v1', JSON.stringify(S)); } catch (e) {} }
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem('cubik.v1') || 'null');
+    if (d && TRUCKS[d.type]) Object.assign(S, d);
+    if (!S.wManual) S.W = 5;
+    if (!S.prod) S.prod = DEFAULT_PROD;
+  } catch (e) {}
+  autoTruck();
+  if (S.mode === 'auto' || !Array.isArray(S.rows) || S.rows.length !== S.L) S.rows = distribute();
+  if (S.sel >= S.L) S.sel = 0;
+}
+
+// Reparto de bultos por fila desde la cabina hacia la compuerta
+function distribute() {
+  const { N, L, W } = S, base = Math.floor(N / L), extra = N % L;
+  const even = [...Array(L)].map((_, i) => base + (i < extra ? 1 : 0));
+  const clean = cleanerSplit(even);
+  const rows = clean && balanceOf(clean).ok ? clean : even;
+  const t = rows.findIndex(n => n >= W && n % W);
+  S.sel = t >= 0 ? t : 0;
+  return rows;
+}
+
+// Busca un reparto alternativo que unifique el remate superior dejando el resto en pisos completos
+function cleanerSplit(even) {
+  const { N, L, W } = S, q = Math.floor(N / L);
+  const kinds = r => new Set(r.map(n => n % W).filter(t => t)).size;
+  let bestK = kinds(even), bestS = Infinity, best = null;
+  if (q < W || bestK <= 1) return null;
+  for (let k = 1; k < L; k++) for (let b = Math.max(0, q - W); b <= q + W; b++) {
+    const rest = N - b * k;
+    if (rest < 0 || rest % (L - k)) continue;
+    const a = rest / (L - k);
+    if (a === b || Math.abs(a - b) > Math.min(2, W - 1)) continue;
+    const r = [...Array(L - k).fill(a), ...Array(k).fill(b)].sort((x, y) => y - x);
+    const kk = kinds(r), ss = r[0] - r[L - 1];
+    if (kk < bestK || (best && kk === bestK && ss < bestS)) { best = r; bestK = kk; bestS = ss; }
+  }
+  return best;
+}
+
+const balance = () => balanceOf(S.rows);
+function balanceOf(rows) {
+  const L = rows.length; let tot = 0, m = 0;
+  rows.forEach((n, i) => { tot += n; m += n * (i + 0.5) / L; });
+  const x = tot ? m / tot : 0.5, front = Math.round((1 - x) * 100);
+  return { x, front, back: 100 - front, ok: Math.abs(front - 50) <= 6 };
+}
+
+// Textos y hoja de cargue
+function rowsTxt(idx) {
+  const nums = idx.map(i => i + 1).sort((a, b) => a - b);
+  if (nums.length === S.L && S.L > 1) return 'todas las filas';
+  if (nums.length === 1) return 'la fila ' + nums[0];
+  const consecutive = nums.every((v, k) => !k || v === nums[k - 1] + 1);
+  if (consecutive && nums.length >= 4) return `las filas ${nums[0]} a ${nums[nums.length - 1]}`;
+  return 'las filas ' + nums.slice(0, -1).join(', ') + ' y ' + nums[nums.length - 1];
+}
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const plural = (n, a, b) => n === 1 ? a : b;
+
+function routeSteps() {
+  const T = TRUCKS[S.type], W = S.W, L = S.L, lay = S.rows.map(lay1);
+  const tot = sum(S.rows), tons = tot * S.kg / 1000, b = balance();
+  const steps = [];
+  steps.push({ t: `Poner **${L} filas** de fondo a compuerta.` });
+  steps.push({ t: `Cada fila lleva **${W} bultos** a lo ancho.` });
+
+  const groups = [];
+  lay.forEach((r, i) => { const g = groups.find(g => g.n === r.n); g ? g.rows.push(i) : groups.push({ n: r.n, rows: [i] }); });
+  groups.forEach(g => {
+    const r = lay1(g.n), who = cap(rowsTxt(g.rows)), each = g.rows.length > 1 ? ' cada una' : '';
+    if (!g.n) steps.push({ t: `${who}: ${plural(g.rows.length, 'queda vacía', 'quedan vacías')}.` });
+    else if (!r.p) steps.push({ t: `${who}: **${g.n} ${plural(g.n, 'bulto', 'bultos')}**${each}, solo en el piso.` });
+    else steps.push({ cls: r.t ? 'tr' : '', t: `${who}: **${g.n} bultos**${each} = ${r.p} ${plural(r.p, 'piso', 'pisos')} de ${W}` +
+      (r.t ? ' ' + topText(W, r.t) : '.') });
+  });
+
+  steps.push({ cls: b.ok ? 'ok' : 'bad', t: b.ok
+    ? `Reparto: ${b.front}% adelante y ${b.back}% atrás. **Camión parejo**, no está recostado.`
+    : `Reparto: ${b.front}% adelante y ${b.back}% atrás. **Camión recostado hacia ${b.front > 50 ? 'la cabina' : 'la compuerta'}**: pasar bultos hacia el centro.` });
+  const over = tons > T.t;
+  steps.push({ cls: over ? 'bad' : 'ok', t: `Total: **${tot} bultos** de ${prodTxt()} = **${fmtT(tons)} toneladas**. ` +
+    (over ? `Supera las ${fmtT(T.t)} T ${deName(S.type)}.` : `Dentro de las ${fmtT(T.t)} T ${deName(S.type)}.`) });
+  return steps;
+}
+
+function summary() {
+  const g = [];
+  S.rows.forEach(n => { const x = g.find(x => x.n === n); x ? x.c++ : g.push({ n, c: 1 }); });
+  const parts = g.map(x => x.n
+    ? `${x.c} ${plural(x.c, 'fila', 'filas')} de ${x.n} ${plural(x.n, 'bulto', 'bultos')}`
+    : `${x.c} ${plural(x.c, 'fila vacía', 'filas vacías')}`);
+  return parts.length > 1 ? parts.slice(0, -1).join(', ') + ' y ' + parts[parts.length - 1] : parts[0];
+}
+const prodTxt = () => /^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]/.test(S.prod) ? S.prod[0].toLowerCase() + S.prod.slice(1) : S.prod;
+
+function shareText() {
+  const T = TRUCKS[S.type], tot = sum(S.rows), tons = tot * S.kg / 1000;
+  const lines = [`*CARGUE · ${S.prod.toUpperCase()}*`,
+    `Camión: ${T.name} (máx. ${fmtT(T.t)} T)`,
+    `Carga: ${tot} bultos de ${S.kg} kg = ${fmtT(tons)} T ${tons > T.t ? '⚠️ SOBREPESO' : '✅'}`,
+    `*Resumen: ${summary()}*`, ''];
+  routeSteps().forEach((s, i) => lines.push(`${i + 1}. ${s.t.replace(/\*\*(.+?)\*\*/g, '*$1*')}`));
+  lines.push('', 'Bultos por fila (cabina → compuerta):', S.rows.map((n, i) => `F${i + 1}: ${n}`).join(' | '));
+  return lines.join('\n');
+}
+
+// Vistas SVG
+const DEFS = `<defs><pattern id="hx" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+  <rect width="6" height="6" fill="#B85D19"/><rect width="2" height="6" fill="#8A420E"/></pattern></defs>`;
+const wheel = (cx, cy, r = 15) => `<circle class="tire" cx="${cx}" cy="${cy}" r="${r}"/><circle class="hub" cx="${cx}" cy="${cy}" r="${r * 0.4}"/>`;
+
+function sideSVG() {
+  const T = TRUCKS[S.type], L = S.L, cw = 36, ph = 15, pad = 10, lab = 34;
+  const lay = S.rows.map(lay1);
+  const top = Math.max(1, ...lay.map(r => r.p + (r.t ? 1 : 0)));
+  const extra = top > T.techo ? (top - T.techo) * ph + 6 : 0;
+  const mula = S.type === 'mula', cabW = mula ? 64 : 72;
+  const bedX = pad + cabW + (mula ? 6 : 10), bedW = L * cw;
+  const bedTop = lab + extra, wallH = T.techo * ph, floorY = bedTop + wallH;
+  const VW = bedX + bedW + 50, VH = floorY + 46;
+  const cabH = Math.min(wallH * 0.8, 100), cabTop = floorY - cabH;
+  let s = `<svg viewBox="0 0 ${VW} ${VH}" style="min-width:${Math.round(VW * 0.55)}px" role="img" aria-label="Camión de lado con ${sum(S.rows)} bultos">${DEFS}`;
+  s += `<text class="lbl" x="${pad}" y="13">◂ CABINA</text><text class="lbl" x="${bedX + bedW}" y="13" text-anchor="end">COMPUERTA ▸</text>`;
+  s += `<rect class="selcol" x="${bedX + S.sel * cw}" y="${lab - 18}" width="${cw}" height="${floorY - lab + 18}"/>`;
+  s += `<path class="cab" d="M${pad} ${floorY + 9}V${cabTop + cabH * 0.38}L${pad + cabW * 0.32} ${cabTop}H${pad + cabW}V${floorY + 9}Z"/>`;
+  s += `<path class="win" d="M${pad + 5} ${cabTop + cabH * 0.36}L${pad + cabW * 0.32 + 3} ${cabTop + 6}H${pad + cabW - 7}V${cabTop + cabH * 0.36}Z"/>`;
+  s += `<path class="cabline" d="M${pad + cabW * 0.5} ${cabTop + cabH * 0.44}V${floorY - 4}"/>`;
+  s += `<rect class="chassis" x="${pad}" y="${floorY}" width="${bedX + bedW - pad + 4}" height="9"/>`;
+  s += `<rect class="xray" x="${bedX}" y="${bedTop}" width="${bedW}" height="${wallH}"/>`;
+  lay.forEach((r, i) => {
+    const x = bedX + i * cw;
+    for (let k = 0; k < r.p; k++) {
+      const y = floorY - (k + 1) * ph + 1;
+      s += `<rect class="bag${k % 2 ? ' alt' : ''}" x="${x + 2}" y="${y}" width="${cw - 4}" height="${ph - 2}" rx="3"/>`;
+      s += `<line class="seam" x1="${x + 7}" y1="${y + 4}" x2="${x + cw - 7}" y2="${y + 4}"/>`;
+    }
+    if (r.t) {
+      const y = floorY - (r.p + 1) * ph + 1;
+      if (r.p && topLayer(S.W, r.t).crossed) s += `<rect class="traba" x="${x + 2}" y="${y}" width="${cw - 4}" height="${ph - 2}" rx="3"/><text class="tnum" x="${x + cw / 2}" y="${y + ph / 2 + 3}">${r.t}</text>`;
+      else if (r.p) s += `<rect class="bag top" x="${x + 2}" y="${y}" width="${cw - 4}" height="${ph - 2}" rx="3"/><text class="pnum" x="${x + cw / 2}" y="${y + ph / 2 + 3}">${r.t}</text>`;
+      else s += `<rect class="bag part" x="${x + 2}" y="${y}" width="${cw - 4}" height="${ph - 2}" rx="3"/><text class="pnum" x="${x + cw / 2}" y="${y + ph / 2 + 3}">${r.t}</text>`;
+    }
+    s += `<text class="rn${i === S.sel ? ' on' : ''}" x="${x + cw / 2}" y="${lab - 5}">${i + 1}</text>`;
+  });
+  for (let i = 2; i < L; i += 2) s += `<line class="post" x1="${bedX + i * cw}" y1="${bedTop}" x2="${bedX + i * cw}" y2="${floorY}"/>`;
+  s += `<rect class="wall" x="${bedX}" y="${bedTop}" width="${bedW}" height="${wallH}"/>`;
+  s += `<line class="gate" x1="${bedX + bedW}" y1="${bedTop}" x2="${bedX + bedW}" y2="${floorY + 9}"/>`;
+  if (top > T.techo) s += `<line class="over" x1="${bedX - 4}" y1="${bedTop}" x2="${bedX + bedW + 4}" y2="${bedTop}"/><text class="overt" x="${pad}" y="${bedTop + 4}">MUY ALTO</text>`;
+  const cy = floorY + 24;
+  s += wheel(pad + cabW * 0.48, cy);
+  if (T.ax === 'single') s += wheel(bedX + bedW * 0.7, cy);
+  else if (T.ax === 'tandem') s += wheel(bedX + bedW * 0.62, cy) + wheel(bedX + bedW * 0.62 + 33, cy);
+  else s += wheel(bedX + 18, cy) + wheel(bedX + 51, cy) + wheel(bedX + bedW - 100, cy) + wheel(bedX + bedW - 67, cy) + wheel(bedX + bedW - 34, cy);
+  const pm = Math.max(0, ...lay.map(r => r.p));
+  if (pm) {
+    const x = bedX + bedW + 12, y2 = floorY - pm * ph;
+    s += `<path class="dim" d="M${x - 4} ${floorY}H${x + 4}M${x} ${floorY}V${y2}M${x - 4} ${y2}H${x + 4}"/>`;
+    s += `<text class="dimn" x="${x + 8}" y="${(floorY + y2) / 2 + 4}">${pm}</text><text class="dimt" x="${x + 8}" y="${(floorY + y2) / 2 + 16}">pisos</text>`;
+  }
+  lay.forEach((r, i) => s += `<rect class="hit" data-row="${i}" x="${bedX + i * cw}" y="${lab - 20}" width="${cw}" height="${floorY - lab + 20}"/>`);
+  return s + '</svg>';
+}
+
+function topSVG() {
+  const L = S.L, W = S.W, cw = 40, bw = 20, pad = 10, lab = 30, cabW = 54;
+  const lay = S.rows.map(lay1);
+  const bedX = pad + cabW + 8, bedY = lab, bedW = L * cw, bedH = W * bw;
+  const VW = bedX + bedW + 40, VH = bedY + bedH + 54;
+  let s = `<svg viewBox="0 0 ${VW} ${VH}" style="min-width:${Math.round(VW * 0.55)}px" role="img" aria-label="Furgón visto desde arriba">${DEFS}`;
+  s += `<text class="lbl" x="${pad}" y="13">◂ CABINA</text><text class="lbl" x="${bedX + bedW}" y="13" text-anchor="end">COMPUERTA ▸</text>`;
+  s += `<rect class="cab" x="${pad}" y="${bedY + bedH * 0.08}" width="${cabW}" height="${bedH * 0.84}" rx="10"/>`;
+  s += `<rect class="win" x="${pad + 6}" y="${bedY + bedH * 0.16}" width="11" height="${bedH * 0.68}" rx="3"/>`;
+  s += `<rect class="xray" x="${bedX}" y="${bedY}" width="${bedW}" height="${bedH}"/>`;
+  s += `<rect class="selcol" x="${bedX + S.sel * cw}" y="${bedY}" width="${cw}" height="${bedH}"/>`;
+  lay.forEach((r, i) => {
+    const x = bedX + i * cw, cells = r.p ? W : r.t;
+    for (let j = 0; j < cells; j++) {
+      const y = bedY + j * bw + 2;
+      s += `<rect class="bag${i % 2 ? ' alt' : ''}${r.p ? '' : ' part'}" x="${x + 2}" y="${y}" width="${cw - 4}" height="${bw - 4}" rx="3"/>`;
+      s += `<line class="seam" x1="${x + 7}" y1="${y + (bw - 4) / 2}" x2="${x + cw - 7}" y2="${y + (bw - 4) / 2}"/>`;
+    }
+    if (r.p && r.t) {
+      // Lo de abajo se aclara para que resalte el remate de encima.
+      s += `<rect class="veil" x="${x + 1}" y="${bedY + 1}" width="${cw - 2}" height="${bedH - 2}"/>`;
+      const top = topLayer(W, r.t);
+      top.slots.forEach(([start, size]) => {
+        const ty = bedY + start * bw + 2, th = size * bw - 4;
+        if (top.crossed) {
+          const tw = cw * 0.6, tx = x + (cw - tw) / 2;
+          s += `<rect class="trs" x="${tx}" y="${ty}" width="${tw}" height="${th}" rx="3"/><line class="trl" x1="${tx + tw / 2}" y1="${ty + 5}" x2="${tx + tw / 2}" y2="${ty + th - 5}"/>`;
+        } else {
+          s += `<rect class="bag top" x="${x + 2}" y="${ty}" width="${cw - 4}" height="${th}" rx="3"/>`;
+        }
+      });
+    }
+    s += `<text class="rn${i === S.sel ? ' on' : ''}" x="${x + cw / 2}" y="${lab - 6}">${i + 1}</text>`;
+    s += `<text class="cnt" x="${x + cw / 2}" y="${bedY + bedH + 15}">${r.n}</text>`;
+  });
+  for (let i = 1; i < L; i++) s += `<line class="rowsep" x1="${bedX + i * cw}" y1="${bedY}" x2="${bedX + i * cw}" y2="${bedY + bedH}"/>`;
+  s += `<rect class="wall" x="${bedX}" y="${bedY}" width="${bedW}" height="${bedH}"/>`;
+  s += `<line class="gate" x1="${bedX + bedW}" y1="${bedY}" x2="${bedX + bedW}" y2="${bedY + bedH}"/>`;
+  const ay = bedY + bedH + 27;
+  s += `<path class="dim" d="M${bedX} ${ay - 4}V${ay + 4}M${bedX} ${ay}H${bedX + bedW}M${bedX + bedW} ${ay - 4}V${ay + 4}"/>`;
+  s += `<text class="dimc" x="${bedX + bedW / 2}" y="${ay + 18}">${L} filas de largo · número = bultos por fila</text>`;
+  const ax = bedX + bedW + 12;
+  s += `<path class="dim" d="M${ax - 4} ${bedY}H${ax + 4}M${ax} ${bedY}V${bedY + bedH}M${ax - 4} ${bedY + bedH}H${ax + 4}"/>`;
+  s += `<text class="dimc" transform="rotate(90 ${ax + 12} ${bedY + bedH / 2})" x="${ax + 12}" y="${bedY + bedH / 2}">${W} de ancho</text>`;
+  lay.forEach((r, i) => s += `<rect class="hit" data-row="${i}" x="${bedX + i * cw}" y="0" width="${cw}" height="${bedY + bedH + 18}"/>`);
+  return s + '</svg>';
+}
+
+function backSVG() {
+  const T = TRUCKS[S.type], W = S.W, be = 44, ph = 17, pad = 8, door = 40, wall = 8, lab = 24;
+  const r = lay1(S.rows[S.sel]);
+  const top = r.p + (r.t ? 1 : 0);
+  const extra = top > T.techo ? (top - T.techo) * ph + 6 : 0;
+  const IW = W * be, x0 = pad + door + 4, inX = x0 + wall, xr = inX + IW;
+  const VW = xr + wall + door + 4 + pad, wallTop = lab + extra + 6, wallH = T.techo * ph, floorY = wallTop + wallH, VH = floorY + 48;
+  let s = `<svg viewBox="0 0 ${VW} ${VH}" style="min-width:${Math.round(VW * 0.55)}px" role="img" aria-label="Fila ${S.sel + 1} vista desde la compuerta">${DEFS}`;
+  s += `<text class="lbl" x="${pad}" y="13">PARED IZQ.</text><text class="lbl" x="${VW - pad}" y="13" text-anchor="end">PARED DER.</text>`;
+  s += `<path class="door" d="M${x0} ${wallTop}L${x0 - door} ${wallTop + 14}V${floorY - 2}L${x0} ${floorY}Z"/>`;
+  s += `<path class="door" d="M${xr + wall} ${wallTop}L${xr + wall + door} ${wallTop + 14}V${floorY - 2}L${xr + wall} ${floorY}Z"/>`;
+  s += `<path class="cabline" d="M${x0 - door / 2} ${wallTop + 10}V${floorY - 4}M${xr + wall + door / 2} ${wallTop + 10}V${floorY - 4}"/>`;
+  s += `<rect class="xray" x="${inX}" y="${wallTop}" width="${IW}" height="${wallH}"/>`;
+  for (let k = 0; k < r.p; k++) for (let j = 0; j < W; j++) {
+    s += `<rect class="bag${(k + j) % 2 ? ' alt' : ''}" x="${inX + j * be + 2}" y="${floorY - (k + 1) * ph + 1}" width="${be - 4}" height="${ph - 2}" rx="7"/>`;
+  }
+  if (r.t) {
+    const y = floorY - (r.p + 1) * ph + 1;
+    if (r.p) {
+      const top = topLayer(W, r.t);
+      top.slots.forEach(([start, size]) => {
+        s += `<rect class="${top.crossed ? 'traba' : 'bag top'}" x="${inX + start * be + 2}" y="${y}" width="${size * be - 4}" height="${ph - 2}" rx="${top.crossed ? 4 : 7}"/>`;
+      });
+      s += `<text class="tlab" x="${inX + IW / 2}" y="${y - 5}">${topShort(W, r.t).toUpperCase()}</text>`;
+    } else {
+      const start = inX + (IW - r.t * be) / 2;
+      for (let j = 0; j < r.t; j++) s += `<rect class="bag part" x="${start + j * be + 2}" y="${y}" width="${be - 4}" height="${ph - 2}" rx="7"/>`;
+    }
+  }
+  s += `<rect class="wallb" x="${x0}" y="${wallTop}" width="${wall}" height="${wallH}"/><rect class="wallb" x="${xr}" y="${wallTop}" width="${wall}" height="${wallH}"/>`;
+  s += `<line class="wall" x1="${inX}" y1="${wallTop}" x2="${xr}" y2="${wallTop}" stroke-dasharray="5 5"/>`;
+  if (top > T.techo) s += `<line class="over" x1="${x0}" y1="${wallTop}" x2="${xr + wall}" y2="${wallTop}"/><text class="overt" x="${inX + IW / 2}" y="${lab - 4}" text-anchor="middle">MUY ALTO</text>`;
+  s += `<rect class="chassis" x="${x0}" y="${floorY}" width="${IW + 2 * wall}" height="8"/>`;
+  s += `<rect class="chassis" x="${x0 + 10}" y="${floorY + 8}" width="${IW + 2 * wall - 20}" height="6" opacity=".7"/>`;
+  [x0 + 2, x0 + 21, xr + wall - 18, xr + wall - 37].forEach(x => s += `<rect class="tire" x="${x}" y="${floorY + 14}" width="16" height="28" rx="4"/>`);
+  return s + '</svg>';
+}
+
+function axleSVG(b) {
+  const pad = 12, VW = 360, Wd = VW - 2 * pad, bw = Wd / S.L, base = 112, hmax = 76, maxN = Math.max(1, ...S.rows);
+  let s = `<svg viewBox="0 0 ${VW} ${base + 48}" role="img" aria-label="Bultos por fila y centro de carga">`;
+  s += `<rect class="zone" x="${pad + 0.44 * Wd}" y="10" width="${0.12 * Wd}" height="${base - 10}"/>`;
+  S.rows.forEach((n, i) => {
+    const h = n / maxN * hmax, x = pad + i * bw;
+    s += `<rect class="bar" x="${x + 2}" y="${base - h}" width="${bw - 4}" height="${h}" rx="2"/>`;
+    if (bw >= 22) s += `<text class="cnt" x="${x + bw / 2}" y="${base - h - 4}">${n}</text>`;
+  });
+  s += `<line class="base" x1="${pad}" y1="${base}" x2="${VW - pad}" y2="${base}"/>`;
+  const cx = pad + b.x * Wd;
+  s += `<path class="${b.ok ? 'mk-ok' : 'mk-bad'}" d="M${cx} ${base + 4}L${cx - 9} ${base + 20}H${cx + 9}Z"/>`;
+  s += `<text class="lbl" x="${pad}" y="${base + 40}">◂ CABINA</text><text class="lbl" x="${VW - pad}" y="${base + 40}" text-anchor="end">COMPUERTA ▸</text>`;
+  s += `<text class="dimc" x="${cx}" y="${base + 34}">centro</text>`;
+  return s + '</svg>';
+}
+
+// Renderizado
+const legend = `<div class="legend"><span><i class="sw"></i>Bulto acostado</span><span><i class="sw tr"></i>Atravesado de amarre</span></div>`;
+
+function renderView() {
+  const v = $('view'), r = lay1(S.rows[S.sel]);
+  if (S.view === 'side') {
+    v.innerHTML = `<p class="cap">Vista lateral · toca una fila para verla desde atrás</p><div class="draw">${sideSVG()}</div>${legend}`;
+  } else if (S.view === 'top') {
+    v.innerHTML = `<p class="cap"><b>${S.L}</b> filas de largo × <b>${S.W}</b> bultos de ancho</p><div class="draw">${topSVG()}</div>${legend}`;
+  } else if (S.view === 'back') {
+    let chips = '';
+    for (let i = 0; i < S.L; i++) chips += `<button class="btn" data-sel="${i}" aria-pressed="${i === S.sel}">${i + 1}</button>`;
+    const desc = r.p ? `${r.p} ${plural(r.p, 'piso', 'pisos')} de ${S.W}` + (r.t ? ' + ' + topShort(S.W, r.t) : '') : (r.t ? `${r.t} en el piso` : 'vacía');
+    v.innerHTML = `<p class="sub">Escoja la fila</p><div class="chips">${chips}</div>
+      <p class="cap">Fila <b>${S.sel + 1}</b> de ${S.L}: ${desc} · <b>${r.n}</b> bultos</p><div class="draw">${backSVG()}</div>${legend}`;
+  } else {
+    const b = balance();
+    v.innerHTML = `<div class="split"><div class="fr" style="width:${Math.max(b.front, 22)}%"><b>${b.front}%</b><small>Adelante · cabina</small></div>
+      <div class="bk" style="flex:1"><b>${b.back}%</b><small>Atrás · compuerta</small></div></div>
+      <p class="verdict ${b.ok ? 'ok' : 'bad'}">${b.ok ? '✓ Camión parejo, no está recostado' : '✕ Recostado hacia ' + (b.front > 50 ? 'la cabina' : 'la compuerta')}</p>
+      <div class="draw">${axleSVG(b)}</div>
+      <p class="hint">Barras: bultos en cada fila. El triángulo es el centro de la carga; debe caer en la franja verde.</p>`;
+  }
+}
+
+function renderStrip() {
+  const box = $('manual'), strip = $('strip');
+  box.hidden = S.mode !== 'manual';
+  if (box.hidden) return;
+  if (+strip.dataset.l !== S.L || +strip.dataset.w !== S.W) {
+    strip.dataset.l = S.L; strip.dataset.w = S.W; strip.innerHTML = '';
+    for (let i = 0; i < S.L; i++) {
+      const d = document.createElement('div');
+      d.className = 'rowctl';
+      d.innerHTML = `<button class="btn" aria-label="Subir un bulto en fila ${i + 1}">▲</button>
+        <div class="val" data-sel="${i}"><b></b><small>Fila ${i + 1}</small></div>
+        <button class="btn" aria-label="Bajar un bulto en fila ${i + 1}">▼</button>`;
+      const [up, dn] = d.querySelectorAll('button');
+      holdable(up, k => { S.rows[i] += k; S.sel = i; render(); });
+      holdable(dn, k => { S.rows[i] = Math.max(0, S.rows[i] - k); S.sel = i; render(); });
+      strip.appendChild(d);
+    }
+  }
+  [...strip.children].forEach((d, i) => {
+    d.classList.toggle('on', i === S.sel);
+    d.querySelector('b').textContent = S.rows[i];
+  });
+}
+
+function render() {
+  const T = TRUCKS[S.type], tot = sum(S.rows), tons = tot * S.kg / 1000;
+  const inp = $('nInput');
+  if (document.activeElement !== inp) inp.value = S.N;
+  $('tonsLine').innerHTML = `${S.N} × ${S.kg} kg = <b>${fmtT(S.N * S.kg / 1000)}</b> toneladas`;
+  $('presets').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.n === S.N));
+  if (document.activeElement !== $('prod')) $('prod').value = S.prod;
+  $('trucks').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.t === S.type));
+  $('kgChips').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.kg === S.kg));
+  $('tAuto').setAttribute('aria-pressed', S.autoTruck);
+  $('tAuto').textContent = S.autoTruck ? '✓ Camión escogido según el peso' : 'Escoger camión solo según el peso';
+  $('truckHint').textContent = S.autoTruck
+    ? `${S.N} bultos de ${S.kg} kg = ${fmtT(S.N * S.kg / 1000)} T: va en ${T.name.toLowerCase()}. Toque otro camión para cambiarlo a mano.`
+    : `Camión escogido a mano: ${T.name.toLowerCase()}.`;
+  $('lBox').innerHTML = `${S.L}<span>filas</span>`;
+  $('lChips').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.l === S.L));
+  $('wChips').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.w === S.W));
+  $('mAuto').setAttribute('aria-pressed', S.mode === 'auto');
+  $('mMan').setAttribute('aria-pressed', S.mode === 'manual');
+  $('modeHint').textContent = S.mode === 'auto'
+    ? 'El sistema divide el total entre las filas: todas llevan lo mismo y el bulto que sobra va de a uno desde la cabina. Lo que no completa piso va encima de remate; si así el remate queda igual en todas, una fila se deja en pisos completos.'
+    : 'Use ▲ y ▼ debajo del dibujo para subir o bajar bultos en una fila. "Repartir parejo" vuelve a empezar.';
+
+  const tally = $('tally');
+  tally.hidden = S.mode !== 'manual';
+  if (!tally.hidden) {
+    const d = tot - S.N;
+    tally.className = 'tally ' + (d ? 'bad' : 'ok');
+    tally.textContent = d === 0 ? `✓ Cuadra: ${tot} de ${S.N} bultos` : `Dibujados ${tot} de ${S.N}: ${d < 0 ? 'faltan ' + (-d) : 'sobran ' + d} ${plural(Math.abs(d), 'bulto', 'bultos')}`;
+  }
+
+  const over = tons > T.t, a = $('alert');
+  a.className = 'alert ' + (over ? 'bad' : 'ok');
+  a.innerHTML = over
+    ? `<p>⚠️ PELIGRO: Carga de ${fmtT(tons)} Toneladas. Este camión supera el peso permitido en báscula</p>
+       <div class="meter"><i style="width:100%"></i></div><span class="meta">${T.name}: máximo ${fmtT(T.t)} T (${Math.floor(T.t * 1000 / S.kg)} bultos). Sobran ${fmtT(tons - T.t)} T.</span>`
+    : `<p>✓ Peso aprobado: ${fmtT(tons)} de ${fmtT(T.t)} toneladas</p>
+       <div class="meter"><i style="width:${Math.min(100, tons / T.t * 100)}%"></i></div><span class="meta">${T.name}: caben hasta ${Math.floor(T.t * 1000 / S.kg)} bultos de ${S.kg} kg.</span>`;
+
+  const maxTop = Math.max(...S.rows.map(n => { const r = lay1(n); return r.p + (r.t ? 1 : 0); }));
+  const tw = $('tallWarn');
+  tw.hidden = maxTop <= T.techo;
+  tw.textContent = `Ojo: ${maxTop} pisos sobrepasan la baranda ${deName(S.type)} (${T.techo} pisos). Agregue filas o use un camión más grande.`;
+
+  $('tabs').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.view === S.view));
+  renderView();
+  renderStrip();
+
+  const steps = routeSteps();
+  $('sum').innerHTML = `<small>RESUMEN</small>${summary()}`;
+  $('route').innerHTML = steps.map(s => `<li class="${s.cls || ''}"><span>${s.t.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')}</span></li>`).join('');
+  $('waBtn').href = 'https://wa.me/?text=' + encodeURIComponent(shareText());
+  save();
+}
+
+// Eventos
+function holdable(btn, fn) {
+  let t1, t2, count = 0;
+  const stop = () => { clearTimeout(t1); clearInterval(t2); };
+  btn.addEventListener('pointerdown', e => {
+    if (e.button) return;
+    e.preventDefault(); stop(); count = 0; fn(1);
+    t1 = setTimeout(() => { t2 = setInterval(() => { count++; fn(count > 20 ? 10 : 1); }, 80); }, 450);
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
+  btn.addEventListener('click', e => { if (e.detail === 0) fn(1); });
+  btn.addEventListener('contextmenu', e => e.preventDefault());
+}
+
+// Selecciona el vehículo más pequeño que soporte el tonelaje total
+function autoTruck() {
+  if (!S.autoTruck) return;
+  const tons = S.N * S.kg / 1000;
+  const k = Object.keys(TRUCKS).find(k => tons <= TRUCKS[k].t) || 'mula';
+  if (k !== S.type) { S.type = k; S.L = TRUCKS[k].L; }
+}
+
+function setN(n) { S.N = Math.max(1, Math.min(3000, n | 0)); autoTruck(); S.rows = distribute(); render(); }
+function setL(l) { S.L = Math.max(3, Math.min(16, l)); S.rows = distribute(); render(); }
+
+function init() {
+  load();
+  $('presets').innerHTML = PRESETS.map(n => `<button class="btn" data-n="${n}">${n}</button>`).join('');
+  $('kgChips').innerHTML = BAG_KG.map(k => `<button class="btn" data-kg="${k}">${k} kg</button>`).join('');
+  $('trucks').innerHTML = Object.entries(TRUCKS).map(([k, t]) => `<button class="btn" data-t="${k}">${t.name}<small>Hasta ${fmtT(t.t)} T</small></button>`).join('');
+  $('lChips').innerHTML = [6, 7, 8, 9, 10].map(l => `<button class="btn" data-l="${l}">${l}</button>`).join('');
+  $('wChips').innerHTML = [3, 4, 5].map(w => `<button class="btn" data-w="${w}">${w}</button>`).join('');
+
+  holdable($('nMinus'), k => setN(S.N - k));
+  holdable($('nPlus'), k => setN(S.N + k));
+  holdable($('lMinus'), () => setL(S.L - 1));
+  holdable($('lPlus'), () => setL(S.L + 1));
+
+  const inp = $('nInput');
+  inp.addEventListener('input', () => {
+    const v = parseInt(inp.value.replace(/\D/g, ''), 10);
+    if (v > 0) { S.N = Math.min(3000, v); autoTruck(); S.rows = distribute(); render(); }
+  });
+  inp.addEventListener('blur', render);
+  inp.addEventListener('focus', () => inp.select());
+
+  $('presets').addEventListener('click', e => { const b = e.target.closest('[data-n]'); if (b) setN(+b.dataset.n); });
+  $('prod').addEventListener('input', e => { S.prod = e.target.value.trim() || DEFAULT_PROD; render(); });
+  $('trucks').addEventListener('click', e => {
+    const b = e.target.closest('[data-t]'); if (!b) return;
+    const t = TRUCKS[b.dataset.t]; S.autoTruck = false; S.type = b.dataset.t; S.L = t.L; S.rows = distribute(); render();
+  });
+  $('tAuto').addEventListener('click', () => { S.autoTruck = true; autoTruck(); S.rows = distribute(); render(); });
+  $('kgChips').addEventListener('click', e => { const b = e.target.closest('[data-kg]'); if (b) { S.kg = +b.dataset.kg; autoTruck(); S.rows = distribute(); render(); } });
+  $('lChips').addEventListener('click', e => { const b = e.target.closest('[data-l]'); if (b) setL(+b.dataset.l); });
+  $('wChips').addEventListener('click', e => { const b = e.target.closest('[data-w]'); if (b) { S.W = +b.dataset.w; S.wManual = true; S.rows = distribute(); render(); } });
+  $('mAuto').addEventListener('click', () => { S.mode = 'auto'; S.rows = distribute(); render(); });
+  $('mMan').addEventListener('click', () => { S.mode = 'manual'; render(); $('view').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+  $('tabs').addEventListener('click', e => { const b = e.target.closest('[data-view]'); if (b) { S.view = b.dataset.view; render(); } });
+  const pick = e => { const t = e.target.closest('[data-row],[data-sel]'); if (t) { S.sel = +(t.dataset.row ?? t.dataset.sel); render(); } };
+  $('view').addEventListener('click', pick);
+  $('strip').addEventListener('click', pick);
+
+  $('copyBtn').addEventListener('click', () => {
+    const txt = shareText(), fb = $('fallback');
+    const done = () => { $('copied').textContent = 'Texto copiado. Péguelo en el chat.'; };
+    try {
+      navigator.clipboard.writeText(txt).then(done, () => { fb.hidden = false; fb.value = txt; fb.select(); $('copied').textContent = 'Mantenga presionado el texto para copiarlo.'; });
+    } catch (e) { fb.hidden = false; fb.value = txt; fb.select(); }
+  });
+
+  render();
+}
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+# Android / Gradle
+.gradle/
+.kotlin/
+**/build/
+local.properties
+*.jks
+keystore.properties
+*.apk
+*.aab
+
+# IDE / OS
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+AGENTS.md
+CLAUDE.md
