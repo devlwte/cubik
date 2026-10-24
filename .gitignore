@@ -13,5 +13,3 @@ keystore.properties
 *.iml
 .DS_Store
 Thumbs.db
-AGENTS.md
-CLAUDE.md
