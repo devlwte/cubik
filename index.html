@@ -172,7 +172,98 @@ svg text{font-family:var(--f-disp);font-weight:700}
 .zone{fill:var(--green);opacity:.22}
 .mk-ok{fill:var(--green)} .mk-bad{fill:var(--red)}
 .base{stroke:var(--steel);stroke-width:3}
-@media (prefers-reduced-motion:reduce){.btn:active{transform:none}}
+/* Modo Rápido */
+.ticon{width:52px;height:52px;flex:none;border-radius:14px;background:var(--card);border:2px solid var(--line);display:grid;place-items:center;cursor:pointer;padding:0;color:var(--ink)}
+.ticon svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.top .ticon{margin-left:auto}
+body.q{overflow:hidden}
+#quick{position:fixed;inset:0;background:var(--bg);z-index:5;display:flex;justify-content:center;
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+#quick[hidden]{display:none}
+.qwrap{width:100%;max-width:560px;display:flex;flex-direction:column;min-height:0;height:100%}
+.qscr{display:flex;flex-direction:column;min-height:0;flex:1}
+.qscr[hidden]{display:none}
+.qbar{display:flex;align-items:center;padding:8px 16px}
+.qtitle{flex:1;text-align:center;font-family:var(--f-disp);font-weight:800;font-size:24px;letter-spacing:.08em;line-height:1.1}
+.qtitle small{display:block;font-family:var(--f-body);font-weight:700;font-size:11px;letter-spacing:.12em;color:var(--traba)}
+.qspace{width:52px;flex:none}
+.qdisp{flex:1;min-height:0;overflow-y:auto;padding:8px 18px;display:flex;flex-direction:column}
+.qdisp>:first-child{margin-top:auto}
+.qlbl{display:flex;justify-content:flex-end;gap:14px;font-weight:700;font-size:12px;letter-spacing:.08em;color:var(--muted)}
+.qlbl .p{color:var(--traba)}
+.qin{font-family:var(--f-disp);font-weight:800;text-align:right;line-height:1.05;margin:4px 0 10px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.qin i{font-style:normal;color:var(--kraft-dk)} .qin u{text-decoration:none;color:var(--traba)}
+.qin.empty{color:var(--line);font-size:66px;margin-bottom:0}
+.qhelp{text-align:right;color:var(--muted);font-size:13px;font-weight:700;margin:-6px 0 10px}
+.qhelp.sel{color:var(--traba)}
+.qin b{font-weight:inherit;cursor:pointer;border-radius:8px}
+.qin b.on{background:var(--sel);color:var(--traba-dk);text-decoration:underline;text-decoration-thickness:3px}
+.qres{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 12px;display:grid;gap:2px}
+.qres.err{background:var(--red-bg);border-color:var(--red)}
+.qres .h{display:flex;flex-wrap:wrap;column-gap:8px;font-weight:700;font-size:14px;color:var(--muted);margin-bottom:2px}
+.qres .h span{white-space:nowrap}
+.qres .h span:first-child{flex:1}
+.qres .ok{color:var(--green)} .qres .bad{color:var(--red)}
+.qres .w{color:var(--red);font-weight:700;font-size:14px}
+.qres .l{font-family:var(--f-disp);font-weight:700;font-size:min(20px,5.3vw);line-height:1.2}
+.qres .l.lg{font-size:min(17px,4.5vw)}
+.qres .l em{font-style:normal;color:var(--traba)}
+.qres .sep{height:2px;background:var(--line);margin:6px 0}
+.qres .pl{display:grid;gap:1px;font-family:var(--f-disp);font-weight:700;line-height:1.2;padding:2px 0}
+.qres .pn{display:flex;align-items:center;gap:8px;font-size:min(17px,4.5vw);color:var(--muted)}
+.qres .pw{font-size:min(19px,5vw);padding-left:22px}
+.qres .pw span{white-space:nowrap}
+.qres .dot{width:14px;height:14px;border-radius:4px;flex:none}
+.qres .rest{font-family:var(--f-body);font-weight:700;font-size:11px;color:var(--traba);border:1.5px solid var(--traba);border-radius:6px;padding:0 5px;flex:none}
+.qres .et{font-family:var(--f-disp);font-weight:700;font-size:20px;color:var(--red)}
+.qres .eh{font-size:14px;color:var(--muted);font-weight:600}
+.qpad{--kh:clamp(42px,calc((47dvh - 64px) / 5),76px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;padding:12px 14px;background:rgba(220,226,232,.55)}
+.key{height:var(--kh);border-radius:16px;border:2px solid var(--line);background:var(--card);box-shadow:0 3px 0 var(--line);
+  font-family:var(--f-disp);font-weight:800;font-size:34px;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;user-select:none;-webkit-user-select:none;padding:0;line-height:1}
+.key:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.key small{font-family:var(--f-body);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--kraft-edge);margin-top:2px}
+.key svg{width:30px;height:30px;fill:currentColor;stroke:currentColor;stroke-width:3.4;stroke-linecap:round}
+.key.cl{color:var(--red)}
+.key.op{background:var(--steel);border-color:var(--ink);box-shadow:0 3px 0 var(--ink);color:#fff}
+.key.fn{background:var(--sel);border-color:var(--kraft-dk);box-shadow:0 3px 0 var(--kraft-dk);font-size:26px}
+.key.fn.t{font-size:22px} .key.fn.t.long{font-size:17px}
+@media (max-height:740px){.key.fn{font-size:min(26px,calc(var(--kh) * .5))} .key.fn.t{font-size:min(22px,calc(var(--kh) * .42))} .key.fn.t.long{font-size:min(17px,calc(var(--kh) * .34))} .key small{font-size:9px;margin-top:0}}
+.key.eq{grid-column:span 2;background:var(--traba);border-color:var(--traba-dk);box-shadow:0 3px 0 var(--traba-dk);color:#fff}
+.qlist{flex:1;min-height:0;overflow-y:auto;padding:6px 16px;display:grid;gap:10px;align-content:start}
+.fold{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--card);border:2px solid var(--line);cursor:pointer;width:100%;font:inherit;text-align:left;color:var(--ink)}
+.fold.open{border-color:var(--kraft-dk);background:#FFFAF1}
+.fold svg{width:30px;height:26px;flex:none}
+.fold .n{flex:1;font-family:var(--f-disp);font-weight:800;font-size:21px}
+.fold .c{font-weight:700;font-size:13px;background:var(--sel);color:var(--kraft-edge);padding:3px 9px;border-radius:9px}
+.fold .a{font-family:var(--f-disp);font-weight:800;font-size:20px;width:14px}
+.ent{display:flex;align-items:center;margin-left:22px;width:calc(100% - 22px);background:var(--card);border:0;border-left:3px solid var(--kraft);border-radius:0 12px 12px 0;
+  cursor:pointer;min-height:58px;font:inherit;color:var(--ink);text-align:left;padding:0}
+.ent .t{width:72px;padding-left:10px;font-weight:700;font-size:13px;color:var(--muted);flex:none}
+.ent .m{flex:1;padding:8px 0}
+.ent b{display:block;font-family:var(--f-disp);font-weight:800;font-size:19px}
+.ent .s{font-size:13px;color:var(--muted);font-weight:600}
+.ent .go{font-family:var(--f-disp);font-size:26px;color:var(--muted);padding:0 12px}
+.sbtn{min-height:48px;border-radius:12px;border:2px solid var(--line);background:var(--card);font-family:var(--f-disp);font-weight:800;font-size:16px;letter-spacing:.03em;
+  text-transform:uppercase;cursor:pointer;color:var(--ink);padding:0 8px;line-height:1.1}
+.sbtn.del{color:var(--red);border-color:#F0B4AE}
+.srow{display:flex;gap:8px} .srow .sbtn{flex:1}
+.srow.in{margin-left:22px}
+.qfoot{padding:16px}
+.empty-h{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:18px}
+.empty-h b{display:block;font-family:var(--f-disp);font-size:22px}
+.empty-h p{margin:6px 0 0;color:var(--muted);font-size:15px}
+.qdet{flex:1;min-height:0;overflow-y:auto;padding:0 16px 24px;display:grid;gap:12px;align-content:start}
+.qdet .qin{font-size:40px;margin:0}
+.qtoast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:12px;padding:12px 16px;font-weight:700;font-size:16px;z-index:9;max-width:calc(100% - 32px)}
+.qtoast[hidden]{display:none}
+.qask{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:8;display:grid;place-items:center;padding:24px}
+.qask[hidden]{display:none}
+.qask>div{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:20px;width:100%;max-width:420px;display:grid;gap:16px}
+.qask b{font-family:var(--f-disp);font-weight:800;font-size:24px}
+.qask p{margin:0;color:var(--muted);font-size:15px}
+.qask .btn.red{background:var(--red);border-color:var(--red);color:#fff}
+@media (prefers-reduced-motion:reduce){.btn:active,.key:active{transform:none}}
 @media (max-width:380px){.counter{grid-template-columns:60px minmax(0,1fr) 60px}.tabs .btn{font-size:14px}}
 </style>
 </head>
@@ -187,6 +278,7 @@ svg text{font-family:var(--f-disp);font-weight:700}
       <rect x="14" y="8" width="16" height="7" rx="2" fill="#B85D19"/>
     </svg>
     <div class="brand">CUBIK<small>Cubicaje y estiba de bultos</small></div>
+    <button class="ticon" id="toQuick" aria-label="Pasar al modo rápido"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM7.5 5h9v4h-9zM8 13h.5M12 13h.5M16 13h.5M8 17h.5M12 17h.5M16 17h.5"/></svg></button>
   </header>
 
   <!-- 1. Bultos -->
@@ -275,6 +367,46 @@ svg text{font-family:var(--f-disp);font-weight:700}
   </section>
 
 </div>
+
+<!-- Modo Rápido -->
+<div id="quick" hidden>
+  <div class="qwrap">
+    <section class="qscr" id="qCalc">
+      <div class="qbar">
+        <button class="ticon" id="qHist" aria-label="Historial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4M12 7v5l3 2"/></svg></button>
+        <div class="qtitle">CUBIK<small>RÁPIDO</small></div>
+        <button class="ticon" id="toFull" aria-label="Pasar al modo completo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9h12v8H2zM14 11h4l3 3v3h-7zM4 9V6h4v3M8 9V6h4v3"/><circle cx="6" cy="18" r="2" fill="#F4F5F7"/><circle cx="17" cy="18" r="2" fill="#F4F5F7"/></svg></button>
+      </div>
+      <div class="qdisp" id="qDisp"></div>
+      <div class="qpad" id="qPad"></div>
+    </section>
+    <section class="qscr" id="qHistory" hidden>
+      <div class="qbar">
+        <button class="ticon" data-go="calc" aria-label="Volver a la calculadora"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <div class="qtitle">HISTORIAL<small>SOLO MODO RÁPIDO</small></div>
+        <span class="qspace"></span>
+      </div>
+      <div class="qlist" id="qList"></div>
+      <div class="qfoot srow">
+        <button class="sbtn" id="qImport">Importar</button>
+        <button class="sbtn" id="qExportAll">Exportar todo</button>
+        <button class="sbtn del" id="qDelAll">Borrar todo</button>
+      </div>
+      <input type="file" id="qFile" accept=".json,application/json,text/plain" hidden>
+    </section>
+    <section class="qscr" id="qDetail" hidden>
+      <div class="qbar">
+        <button class="ticon" data-go="history" aria-label="Volver al historial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <div class="qtitle">CÁLCULO<small id="qDetWhen"></small></div>
+        <span class="qspace"></span>
+      </div>
+      <div class="qdet" id="qDet"></div>
+    </section>
+  </div>
+</div>
+<div class="qask" id="qAsk" hidden><div><b id="qAskT"></b><p>Esto no se puede deshacer.</p>
+  <div class="grid g2"><button class="btn" id="qAskNo">Cancelar</button><button class="btn red" id="qAskOk"></button></div></div></div>
+<div class="qtoast" id="qToast" role="status" hidden></div>
 
 <script>
 const BAG_KG = [25, 40, 50];
@@ -590,27 +722,28 @@ function axleSVG(b) {
 // Renderizado
 const legend = `<div class="legend"><span><i class="sw"></i>Bulto acostado</span><span><i class="sw tr"></i>Atravesado de amarre</span></div>`;
 
-function renderView() {
-  const v = $('view'), r = lay1(S.rows[S.sel]);
+function viewHTML() {
+  const r = lay1(S.rows[S.sel]);
   if (S.view === 'side') {
-    v.innerHTML = `<p class="cap">Vista lateral · toca una fila para verla desde atrás</p><div class="draw">${sideSVG()}</div>${legend}`;
+    return `<p class="cap">Vista lateral · toca una fila para verla desde atrás</p><div class="draw">${sideSVG()}</div>${legend}`;
   } else if (S.view === 'top') {
-    v.innerHTML = `<p class="cap"><b>${S.L}</b> filas de largo × <b>${S.W}</b> bultos de ancho</p><div class="draw">${topSVG()}</div>${legend}`;
+    return `<p class="cap"><b>${S.L}</b> filas de largo × <b>${S.W}</b> bultos de ancho</p><div class="draw">${topSVG()}</div>${legend}`;
   } else if (S.view === 'back') {
     let chips = '';
     for (let i = 0; i < S.L; i++) chips += `<button class="btn" data-sel="${i}" aria-pressed="${i === S.sel}">${i + 1}</button>`;
     const desc = r.p ? `${r.p} ${plural(r.p, 'piso', 'pisos')} de ${S.W}` + (r.t ? ' + ' + topShort(S.W, r.t) : '') : (r.t ? `${r.t} en el piso` : 'vacía');
-    v.innerHTML = `<p class="sub">Escoja la fila</p><div class="chips">${chips}</div>
+    return `<p class="sub">Escoja la fila</p><div class="chips">${chips}</div>
       <p class="cap">Fila <b>${S.sel + 1}</b> de ${S.L}: ${desc} · <b>${r.n}</b> bultos</p><div class="draw">${backSVG()}</div>${legend}`;
   } else {
     const b = balance();
-    v.innerHTML = `<div class="split"><div class="fr" style="width:${Math.max(b.front, 22)}%"><b>${b.front}%</b><small>Adelante · cabina</small></div>
+    return `<div class="split"><div class="fr" style="width:${Math.max(b.front, 22)}%"><b>${b.front}%</b><small>Adelante · cabina</small></div>
       <div class="bk" style="flex:1"><b>${b.back}%</b><small>Atrás · compuerta</small></div></div>
       <p class="verdict ${b.ok ? 'ok' : 'bad'}">${b.ok ? '✓ Camión parejo, no está recostado' : '✕ Recostado hacia ' + (b.front > 50 ? 'la cabina' : 'la compuerta')}</p>
       <div class="draw">${axleSVG(b)}</div>
       <p class="hint">Barras: bultos en cada fila. El triángulo es el centro de la carga; debe caer en la franja verde.</p>`;
   }
 }
+function renderView() { $('view').innerHTML = viewHTML(); }
 
 function renderStrip() {
   const box = $('manual'), strip = $('strip');
@@ -763,7 +896,435 @@ function init() {
   });
 
   render();
+  initQuick();
 }
+
+// Modo Rápido
+// Formato: bultos,filas,ancho÷producto1,producto2,…  (filas, ancho y productos son opcionales).
+const MAX_PRODUCTS = 4, MAX_BAGS = 3000;
+const TRUCK_CYCLE = [null, 'turbo', 'sencillo', 'doble', 'mula'];
+const PRODUCT_COLORS = ['#C28B46', '#2C3338', '#2F7D8C', '#6B7F2A'];
+const MONTHS = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+const Q = { quick: false, input: '', kg: 50, truck: null, shown: false, lastId: null, history: [] };
+let qSel = null, qFresh = false;
+let qScreen = 'calc', qDetailId = null, qDetLoad = null, qOpen = null, qAskFn = null, qToastT = 0;
+
+function qSave() { try { localStorage.setItem('cubik.calc.v1', JSON.stringify(Q)); } catch (e) {} }
+function qLoad() {
+  try {
+    const d = JSON.parse(localStorage.getItem('cubik.calc.v1') || 'null');
+    if (d) {
+      Object.assign(Q, d);
+      if (!BAG_KG.includes(Q.kg)) Q.kg = 50;
+      if (!TRUCKS[Q.truck]) Q.truck = null;
+      Q.history = Array.isArray(Q.history) ? cleanEntries(Q.history) : [];
+    }
+  } catch (e) {}
+}
+const newId = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+
+// Las vistas SVG leen S: se cambia un momento por otra carga.
+function withS(state, fn) {
+  const keep = { ...S, rows: [...S.rows] };
+  Object.assign(S, state);
+  try { return fn(); } finally { Object.assign(S, keep); }
+}
+
+function splitExpr(input) {
+  const i = input.indexOf('÷');
+  return { head: (i < 0 ? input : input.slice(0, i)).split(','), products: i < 0 ? null : input.slice(i + 1).split(',') };
+}
+function sumOf(part) {
+  const nums = part.split('+').filter(x => x);
+  if (!nums.length || nums.some(x => !/^\d+$/.test(x))) return null;
+  return nums.reduce((a, x) => a + +x, 0);
+}
+
+function calculate(input, kg, truck) {
+  const e = splitExpr(input), n = sumOf(e.head[0]);
+  if (n === null) return { ok: false, text: 'Escriba los bultos', hint: 'Ejemplo: 300,8,5' };
+  if (n < 1) return { ok: false, text: 'Los bultos deben ser más de 0', hint: 'Ejemplo: 300,8,5' };
+  if (n > MAX_BAGS) return { ok: false, text: `Máximo ${MAX_BAGS} bultos`, hint: 'Revise el total de bultos.' };
+  const filas = e.head[1] ? +e.head[1] : null, ancho = e.head[2] ? +e.head[2] : null;
+  if (filas !== null && (filas < 3 || filas > 16)) return { ok: false, text: 'Las filas van de 3 a 16', hint: `Usted escribió ${filas} filas.` };
+  if (ancho !== null && (ancho < 3 || ancho > 5)) return { ok: false, text: 'El ancho va de 3 a 5 bultos', hint: `Usted escribió ${ancho} de ancho.` };
+
+  const start = truck || 'doble';
+  const load = withS({ N: n, kg, W: ancho || 5, wManual: ancho !== null, autoTruck: !truck, type: start, L: TRUCKS[start].L,
+    mode: 'auto', view: 'side', prod: DEFAULT_PROD, rows: [], sel: 0 }, () => {
+    autoTruck();
+    if (filas !== null) S.L = filas; else S.L = TRUCKS[S.type].L;
+    S.rows = distribute();
+    return { ...S, rows: [...S.rows] };
+  });
+
+  const written = (e.products || []).filter(x => x).map(x => sumOf(x) ?? 0);
+  if (!written.length) return { ok: true, load, products: [] };
+  if (written.some(x => x < 1)) return { ok: false, text: 'Cada producto debe tener bultos', hint: 'Quite el producto en 0.' };
+  if (written.length > MAX_PRODUCTS) return { ok: false, text: `Máximo ${MAX_PRODUCTS} productos`, hint: 'Junte algunos productos.' };
+  const s = sum(written), txt = written.join(' + ');
+  if (written.length === 1 && written[0] === n) return { ok: false, text: 'Para dividir se necesitan al menos 2 productos', hint: `Escriba menos de ${n} o quite el ÷.` };
+  if (s > n) return written.length === 1
+    ? { ok: false, text: `${s} bultos pasa del total (${n})`, hint: 'El producto debe ser menor que el total.' }
+    : { ok: false, text: `${txt} = ${s} bultos, pasa del total (${n})`, hint: `Revise los productos: no pueden pasar de ${n}.` };
+  if (s === n) return { ok: true, load, products: written.map(n => ({ n })) };
+  // Lo que sobra siempre pasa a ser otro producto (RESTO).
+  if (written.length === MAX_PRODUCTS) return { ok: false, text: `Sobran ${n - s} bultos y ya hay ${MAX_PRODUCTS} productos`, hint: 'Junte algunos productos.' };
+  return { ok: true, load, products: [...written.map(n => ({ n })), { n: n - s, rest: true }] };
+}
+
+function rowLines(load) {
+  const g = [];
+  load.rows.forEach(n => { const x = g.find(x => x.n === n); x ? x.c++ : g.push({ n, c: 1 }); });
+  return g.map(({ n, c }) => {
+    const p = Math.floor(n / load.W), t = n % load.W;
+    let main, top = null;
+    if (!n) main = 'vacía';
+    else if (!p) main = `${n} en el piso`;
+    else {
+      main = `${n} = ${p} ${plural(p, 'piso', 'pisos')} de ${load.W}`;
+      if (t) top = topLayer(load.W, t).crossed ? `${t} atrav.` : `${t} encima`;
+    }
+    return { n, pre: `${c} ${plural(c, 'fila', 'filas')} → `, main, top };
+  });
+}
+
+function productText(load, products) {
+  const rows = load.rows;
+  let i = 0, used = 0;
+  return products.map(p => {
+    let left = p.n, runN = 0, runC = 0;
+    const parts = [];
+    const flush = () => { if (!runC) return; parts.push(`${runC} ${plural(runC, 'fila', 'filas')} de ${runN}`); runC = 0; };
+    while (left > 0 && i < rows.length) {
+      const avail = rows[i] - used;
+      if (avail <= 0) { i++; used = 0; continue; }
+      const take = Math.min(left, avail);
+      if (used === 0 && take === rows[i]) { if (runC && runN !== rows[i]) flush(); runN = rows[i]; runC++; }
+      else { flush(); parts.push(`${take} en fila ${i + 1}`); }
+      left -= take; used += take;
+      if (used >= rows[i]) { i++; used = 0; }
+    }
+    flush();
+    return parts.join(' + ');
+  });
+}
+const productLabel = (i, p) => `P${i + 1} · ${p.n}`;
+
+function quickShareText(r) {
+  const base = withS(r.load, shareText);
+  if (!r.products.length) return base;
+  const where = productText(r.load, r.products);
+  return [base, '', '*Productos (fondo → compuerta):*',
+    ...r.products.map((p, i) => `${productLabel(i, p)} → ${where[i]}` + (p.rest ? ' (resto)' : ''))].join('\n');
+}
+
+const numberSpans = s => [...s.matchAll(/\d+/g)].map(m => [m.index, m.index + m[0].length]);
+function numberName(s, k) {
+  const r = numberSpans(s)[k]; if (!r) return '';
+  const before = s.slice(0, r[0]), div = before.indexOf('÷');
+  if (div >= 0) return `el producto ${before.slice(div).split(',').length}`;
+  return ['los bultos', 'las filas'][before.split(',').length - 1] || 'el ancho';
+}
+function editNumber(s, k, key, fresh) {
+  const r = numberSpans(s)[k]; if (!r) return s;
+  const cur = s.slice(r[0], r[1]);
+  const next = key === '⌫' ? (cur.slice(0, -1) || '0') : fresh || cur === '0' ? (key.replace(/^0+/, '') || '0') : cur + key;
+  return next.length > 4 ? s : s.slice(0, r[0]) + next + s.slice(r[1]);
+}
+
+function press(s, key) {
+  const last = s.slice(-1), digitLast = /\d/.test(last), token = (s.match(/\d*$/) || [''])[0];
+  const e = splitExpr(s), inProducts = e.products !== null;
+  if (s.length >= 40 && key !== '⌫') return s;
+  if (key === '⌫') return s.slice(0, -1);
+  if (key === '00') return token && token !== '0' && token.length <= 2 ? s + '00' : s;
+  if (key === ',') {
+    if (!digitLast || (!inProducts && e.head.length >= 3) || (inProducts && e.products.length >= MAX_PRODUCTS)) return s;
+    return s + ',';
+  }
+  if (key === '÷') return digitLast && !inProducts ? s + '÷' : s;
+  if (key === '+') return digitLast && (inProducts || e.head.length === 1) ? s + '+' : s;
+  if (token.length >= 4) return s;
+  return token === '0' ? s.slice(0, -1) + key : s + key;
+}
+
+const pad2 = n => String(n).padStart(2, '0');
+function dayKey(ts) { const d = new Date(ts); return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`; }
+function hourTxt(ts) { const d = new Date(ts), h = d.getHours(); return `${h % 12 || 12}:${pad2(d.getMinutes())} ${h < 12 ? 'am' : 'pm'}`; }
+function dayLabel(key) {
+  const [y, m, d] = key.split('-').map(Number), short = `${d} ${MONTHS[m - 1]}`;
+  const now = Date.now(), yest = new Date(); yest.setDate(yest.getDate() - 1);
+  if (key === dayKey(now)) return `HOY · ${short}`;
+  if (key === dayKey(yest)) return `AYER · ${short}`;
+  return `${short} ${y}`;
+}
+function days() {
+  const out = [];
+  [...Q.history].sort((a, b) => b.ts - a.ts).forEach(e => {
+    const k = dayKey(e.ts), d = out.find(d => d.key === k);
+    d ? d.entries.push(e) : out.push({ key: k, label: dayLabel(k), entries: [e] });
+  });
+  return out;
+}
+
+// Respaldo: el mismo formato en la web y en Android.
+function cleanEntries(list) {
+  return list.filter(e => e && typeof e.input === 'string' && e.input && BAG_KG.includes(e.kg)).map(e => ({
+    id: String(e.id || newId()), ts: +e.ts || Date.now(), input: e.input, kg: e.kg, truck: TRUCKS[e.truck] ? e.truck : null
+  }));
+}
+function exportJson(entries) {
+  return JSON.stringify({ app: 'cubik', type: 'historial', version: 1,
+    entries: [...entries].sort((a, b) => a.ts - b.ts).map(e => ({ id: e.id, ts: e.ts, input: e.input, kg: e.kg, truck: e.truck || 'auto' })) }, null, 2);
+}
+function download(entries, name) {
+  const url = URL.createObjectURL(new Blob([exportJson(entries)], { type: 'application/json' }));
+  const a = document.createElement('a');
+  a.href = url; a.download = `cubik-historial-${name}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+  toast('Respaldo descargado.');
+}
+
+function toast(t) {
+  const el = $('qToast');
+  el.textContent = t; el.hidden = false;
+  clearTimeout(qToastT); qToastT = setTimeout(() => { el.hidden = true; }, 3500);
+}
+function ask(text, ok, fn) { $('qAskT').textContent = text; $('qAskOk').textContent = ok; qAskFn = fn; $('qAsk').hidden = false; }
+
+const esc = t => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const editable = t => colored(t).replace(/\d+/g, (() => { let k = 0; return n => `<b data-n="${k}"${k++ === qSel ? ' class="on"' : ''}>${n}</b>`; })());
+const colored = t => esc(t).replace(/,/g, '<i>,</i>').replace(/[÷+]/g, c => `<u>${c}</u>`);
+function inSize(t) { const l = t.length; return l <= 8 ? 66 : l <= 11 ? 56 : l <= 14 ? 46 : l <= 18 ? 38 : 32; }
+
+function resultHTML(r) {
+  if (!r.ok) return `<div class="qres err"><span class="et">${esc(r.text)}</span><span class="eh">${esc(r.hint)}</span></div>`;
+  const L = r.load, T = TRUCKS[L.type], tons = sum(L.rows) * L.kg / 1000, b = balanceOf(L.rows);
+  let h = `<div class="qres"><div class="h"><span>${T.name} · ${fmtT(tons)} t · ${L.kg} kg</span>` +
+    `<span class="${b.ok ? 'ok' : 'bad'}">${b.ok ? `Parejo ${b.front}/${b.back} ✓` : `Recostado ${b.front}/${b.back}`}</span></div>`;
+  if (tons > T.t) h += `<span class="w">⚠ Pasa de ${fmtT(T.t)} t ${deName(L.type)} (máx. ${Math.floor(T.t * 1000 / L.kg)} bultos)</span>`;
+  const maxTop = Math.max(...L.rows.map(n => Math.floor(n / L.W) + (n % L.W ? 1 : 0)));
+  if (maxTop > T.techo) h += `<span class="w">⚠ ${maxTop} pisos pasan la baranda (${T.techo})</span>`;
+  const lines = rowLines(L), lineHTML = l => `${l.main}${l.top ? ` + <em>${l.top}</em>` : ''}`;
+  if (!r.products.length) lines.forEach(l => { h += `<span class="l">${l.pre}${lineHTML(l)}</span>`; });
+  else {
+    const what = productText(L, r.products);
+    h += '<div class="sep"></div>';
+    r.products.forEach((p, i) => {
+      h += `<div class="pl"><span class="pn"><i class="dot" style="background:${PRODUCT_COLORS[i % 4]}"></i>${productLabel(i, p)}` +
+        (p.rest ? '<span class="rest">RESTO</span>' : '') + `</span><span class="pw">${what[i].split(' + ').map(x => `<span>${x}</span>`).join(' + ')}</span></div>`;
+    });
+    h += '<div class="sep"></div>';
+    lines.filter(l => l.n > 0).forEach(l => { h += `<span class="l lg">${l.pre.replace(' → ', ' de ')}${lineHTML(l)}</span>`; });
+  }
+  return h + '</div>';
+}
+
+function renderCalc() {
+  if (qSel !== null && qSel >= numberSpans(Q.input).length) qSel = null;
+  const e = splitExpr(Q.input);
+  let h = '<div class="qlbl">' + ['BULTOS', 'FILAS', 'ANCHO'].slice(0, Math.max(1, e.head.length)).map(x => `<span>${x}</span>`).join('') +
+    (e.products ? '<span class="p">PRODUCTOS</span>' : '') + '</div>';
+  const d = $('qDisp');
+  const fs = Q.shown && d.clientHeight < 320 ? Math.min(inSize(Q.input), 34) : inSize(Q.input);
+  h += Q.input
+    ? `<div class="qin" style="font-size:min(${fs}px,${(fs / 3.8).toFixed(1)}vw)" aria-label="Escrito: ${esc(Q.input)}. Toque un número para cambiarlo.">${editable(Q.input)}</div>` +
+      (qSel !== null ? `<p class="qhelp sel">Cambiando ${numberName(Q.input, qSel)} · toque = para calcular</p>`
+        : fs >= inSize(Q.input) || !Q.shown ? '<p class="qhelp">Toque un número para cambiarlo</p>' : '')
+    : '<div class="qin empty">0</div><p class="qhelp">Escriba bultos,filas,ancho y toque =</p>';
+  if (Q.shown) h += resultHTML(calculate(Q.input, Q.kg, Q.truck));
+  d.innerHTML = h;
+  d.scrollTop = d.scrollHeight;
+  const tl = Q.truck ? (Q.truck === 'doble' ? 'DOBLE' : TRUCKS[Q.truck].name.toUpperCase()) : 'AUTO';
+  const kgK = $('qPad').querySelector('[data-k="kg"]'), tK = $('qPad').querySelector('[data-k="truck"]');
+  kgK.innerHTML = `${Q.kg}<small>KG</small>`;
+  kgK.setAttribute('aria-label', `Peso del bulto: ${Q.kg} kilos`);
+  tK.innerHTML = `${tl}<small>CAMIÓN</small>`;
+  tK.classList.toggle('long', tl.length > 6);
+  tK.setAttribute('aria-label', `Camión: ${Q.truck ? TRUCKS[Q.truck].name : 'automático'}`);
+}
+
+const entryResult = e => calculate(e.input, e.kg, e.truck);
+function entryTitle(e) { const r = entryResult(e); return r.ok ? `${r.load.N} bultos · ${r.load.kg} kg` : e.input; }
+function entrySub(e) {
+  const r = entryResult(e);
+  if (!r.ok) return r.text;
+  return `${TRUCKS[r.load.type].name} · ${fmtT(sum(r.load.rows) * r.load.kg / 1000)} t · ${r.load.L} filas` + (r.products.length ? ` · ${r.products.length} productos` : '');
+}
+
+function renderHistory() {
+  const ds = days();
+  if (qOpen === null) qOpen = new Set(ds.length ? [ds[0].key] : []);
+  const folder = open => `<svg viewBox="0 0 24 20" aria-hidden="true"><path d="M1 3a2 2 0 0 1 2-2h6l2 3h10a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2z" fill="${open ? '#C28B46' : '#D9A05B'}" stroke="#7A4E1C" stroke-width="1.2"/></svg>`;
+  let h = '';
+  if (!ds.length) h = '<div class="empty-h"><b>Todavía no hay cálculos</b><p>Cada vez que toque = en la calculadora se guarda aquí, en la carpeta del día.</p></div>';
+  ds.forEach(d => {
+    const open = qOpen.has(d.key);
+    h += `<button class="fold${open ? ' open' : ''}" data-day="${d.key}" aria-expanded="${open}">${folder(open)}<span class="n">${d.label}</span><span class="c">${d.entries.length}</span><span class="a">${open ? '▾' : '▸'}</span></button>`;
+    if (!open) return;
+    d.entries.forEach(e => {
+      h += `<button class="ent" data-id="${esc(e.id)}"><span class="t">${hourTxt(e.ts)}</span><span class="m"><b>${esc(entryTitle(e))}</b><span class="s">${esc(entrySub(e))}</span></span><span class="go">›</span></button>`;
+    });
+    h += `<div class="srow in"><button class="sbtn" data-exp="${d.key}">Exportar día</button><button class="sbtn del" data-del="${d.key}">Borrar día</button></div>`;
+  });
+  $('qList').innerHTML = h;
+}
+
+function renderDetail() {
+  const e = Q.history.find(x => x.id === qDetailId);
+  if (!e) { qGo('history'); return; }
+  const r = entryResult(e);
+  $('qDetWhen').textContent = `${dayLabel(dayKey(e.ts))} · ${hourTxt(e.ts)}`.toUpperCase();
+  let h = `<div class="qin" style="font-size:${e.input.length > 16 ? 32 : 40}px">${colored(e.input)}</div>` + resultHTML(r);
+  if (r.ok) {
+    if (!qDetLoad) qDetLoad = { ...r.load, rows: [...r.load.rows] };
+    h += `<section class="card"><div class="tabs" id="qTabs">${$('tabs').innerHTML}</div><div class="field" id="qView">${withS(qDetLoad, viewHTML)}</div></section>`;
+    h += `<a class="btn wa" id="qWa" href="https://wa.me/?text=${encodeURIComponent(quickShareText(r))}" target="_blank" rel="noopener">${$('waBtn').querySelector('svg').outerHTML}Compartir por WhatsApp</a>`;
+  }
+  h += `<div class="srow"><button class="sbtn" id="qUse" style="flex:1.4">Usar en calculadora</button><button class="sbtn" id="qExpOne">Exportar</button><button class="sbtn del" id="qDelOne">Borrar</button></div>`;
+  $('qDet').innerHTML = h;
+  if (r.ok) $('qTabs').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.view === qDetLoad.view));
+}
+
+function qGo(screen) {
+  qScreen = screen;
+  $('qCalc').hidden = screen !== 'calc';
+  $('qHistory').hidden = screen !== 'history';
+  $('qDetail').hidden = screen !== 'detail';
+  if (screen === 'calc') { qSel = null; renderCalc(); }
+  if (screen === 'history') renderHistory();
+  if (screen === 'detail') renderDetail();
+}
+
+function setQuick(on) {
+  Q.quick = on; qSave();
+  $('quick').hidden = !on;
+  document.querySelector('.wrap').hidden = on;
+  document.body.classList.toggle('q', on);
+  if (on) qGo('calc'); else render();
+}
+
+function refreshShown() {
+  if (Q.shown && calculate(Q.input, Q.kg, Q.truck).ok) {
+    const e = Q.history.find(x => x.id === Q.lastId);
+    if (e) { e.kg = Q.kg; e.truck = Q.truck; }
+  }
+  qSave(); renderCalc();
+}
+
+function equals() {
+  Q.shown = true;
+  if (calculate(Q.input, Q.kg, Q.truck).ok) {
+    const now = Date.now(), last = [...Q.history].sort((a, b) => b.ts - a.ts)[0];
+    if (last && last.input === Q.input && last.kg === Q.kg && last.truck === Q.truck && dayKey(last.ts) === dayKey(now)) Q.lastId = last.id;
+    else { const e = { id: newId(), ts: now, input: Q.input, kg: Q.kg, truck: Q.truck }; Q.history.push(e); Q.lastId = e.id; }
+  }
+  qSave(); renderCalc();
+}
+
+function initQuick() {
+  qLoad();
+  const sym = {
+    '÷': '<svg viewBox="0 0 30 30"><path d="M5 15h20"/><circle cx="15" cy="6.5" r="2.6" stroke="none"/><circle cx="15" cy="23.5" r="2.6" stroke="none"/></svg>',
+    '+': '<svg viewBox="0 0 30 30"><path d="M5 15h20M15 5v20"/></svg>',
+    '=': '<svg viewBox="0 0 30 30"><path d="M5 11h20M5 19h20"/></svg>',
+    ',': '<svg viewBox="0 0 30 30"><circle cx="15" cy="18" r="3.8" stroke="none"/><path d="M18 19l-5 8" stroke-width="3"/></svg>'
+  };
+  const keys = [
+    ['C', 'cl', 'Borrar todo'], ['⌫', '', 'Borrar uno'], ['kg', 'fn'], ['truck', 'fn t'],
+    ['7'], ['8'], ['9'], ['÷', 'op', 'Dividir en productos'],
+    ['4'], ['5'], ['6'], ['+', 'op', 'Sumar'],
+    ['1'], ['2'], ['3'], [',', 'fn', 'Coma: separa bultos, filas, ancho y productos'],
+    ['0'], ['00'], ['=', 'eq', 'Calcular']
+  ];
+  $('qPad').innerHTML = keys.map(([k, cls = '', label = k]) =>
+    `<button class="key ${cls}" data-k="${k}" aria-label="${label}">${sym[k] || (k === 'kg' || k === 'truck' ? '' : k)}</button>`).join('');
+  $('qPad').addEventListener('click', ev => {
+    const b = ev.target.closest('[data-k]'); if (!b) return;
+    const k = b.dataset.k;
+    if (qSel !== null && (k === '⌫' || /^\d+$/.test(k))) {
+      const n = editNumber(Q.input, qSel, k, qFresh); qFresh = false;
+      if (n !== Q.input) { Q.input = n; Q.shown = false; qSave(); }
+      renderCalc(); return;
+    }
+    if (k !== 'kg' && k !== 'truck') qSel = null;
+    if (k === 'C') { Q.input = ''; Q.shown = false; qSave(); renderCalc(); }
+    else if (k === '=') equals();
+    else if (k === 'kg') { Q.kg = BAG_KG[(BAG_KG.indexOf(Q.kg) + 1) % BAG_KG.length]; refreshShown(); }
+    else if (k === 'truck') { Q.truck = TRUCK_CYCLE[(TRUCK_CYCLE.indexOf(Q.truck) + 1) % TRUCK_CYCLE.length]; refreshShown(); }
+    else { const n = press(Q.input, k); if (n !== Q.input) { Q.input = n; Q.shown = false; qSave(); renderCalc(); } }
+  });
+  // Teclado físico en computador.
+  addEventListener('resize', () => { if (Q.quick && qScreen === 'calc') renderCalc(); });
+  document.addEventListener('keydown', ev => {
+    if ($('quick').hidden || qScreen !== 'calc' || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    const map = { Enter: '=', '=': '=', Backspace: '⌫', Escape: 'C', '/': '÷', '+': '+', ',': ',', '.': ',' };
+    const k = /^\d$/.test(ev.key) ? ev.key : map[ev.key];
+    if (!k) return;
+    ev.preventDefault();
+    $('qPad').querySelector(`[data-k="${k}"]`).click();
+  });
+
+  $('qDisp').addEventListener('click', ev => {
+    if (!ev.target.closest('.qin')) return;
+    const b = ev.target.closest('[data-n]'), k = b ? +b.dataset.n : null;
+    qSel = k === qSel ? null : k; qFresh = true;
+    renderCalc();
+  });
+  $('toQuick').addEventListener('click', () => setQuick(true));
+  $('toFull').addEventListener('click', () => setQuick(false));
+  $('qHist').addEventListener('click', () => { qOpen = null; qGo('history'); });
+  $('quick').addEventListener('click', ev => { const b = ev.target.closest('[data-go]'); if (b) qGo(b.dataset.go); });
+
+  $('qList').addEventListener('click', ev => {
+    const f = ev.target.closest('[data-day]'), en = ev.target.closest('[data-id]');
+    const ex = ev.target.closest('[data-exp]'), del = ev.target.closest('[data-del]');
+    if (f) { const k = f.dataset.day; qOpen.has(k) ? qOpen.delete(k) : qOpen.add(k); renderHistory(); }
+    else if (en) { qDetailId = en.dataset.id; qDetLoad = null; qGo('detail'); }
+    else if (ex) download(days().find(d => d.key === ex.dataset.exp).entries, ex.dataset.exp);
+    else if (del) {
+      const d = days().find(d => d.key === del.dataset.del);
+      ask(`¿Borrar los ${d.entries.length} cálculos de ${d.label.toLowerCase()}?`, 'Borrar', () => {
+        const ids = new Set(d.entries.map(e => e.id)); Q.history = Q.history.filter(e => !ids.has(e.id)); qSave(); renderHistory();
+      });
+    }
+  });
+  $('qExportAll').addEventListener('click', () => { if (Q.history.length) download(Q.history, 'todo-' + dayKey(Date.now())); });
+  $('qDelAll').addEventListener('click', () => {
+    if (Q.history.length) ask('¿Borrar todo el historial?', 'Borrar todo', () => { Q.history = []; qSave(); renderHistory(); });
+  });
+  $('qImport').addEventListener('click', () => $('qFile').click());
+  $('qFile').addEventListener('change', async () => {
+    const f = $('qFile').files[0]; $('qFile').value = '';
+    if (!f) return;
+    let list = null;
+    try { const d = JSON.parse(await f.text()); if (d && d.app === 'cubik' && Array.isArray(d.entries)) list = cleanEntries(d.entries); } catch (e) {}
+    if (!list) { toast('Ese archivo no es un historial de Cubik.'); return; }
+    const have = new Set(Q.history.map(e => e.id));
+    const fresh = list.filter((e, i) => !have.has(e.id) && list.findIndex(x => x.id === e.id) === i);
+    Q.history.push(...fresh); qSave(); qOpen = null; renderHistory();
+    toast(fresh.length ? `Se agregaron ${fresh.length} ${plural(fresh.length, 'cálculo', 'cálculos')}.` : 'Esos cálculos ya estaban en el historial.');
+  });
+
+  $('qDet').addEventListener('click', ev => {
+    const e = Q.history.find(x => x.id === qDetailId); if (!e) return;
+    const tab = ev.target.closest('#qTabs [data-view]'), row = ev.target.closest('#qView [data-row], #qView [data-sel]');
+    if (tab) { qDetLoad.view = tab.dataset.view; renderDetail(); }
+    else if (row) { qDetLoad.sel = +(row.dataset.row ?? row.dataset.sel); renderDetail(); }
+    else if (ev.target.closest('#qUse')) { Object.assign(Q, { input: e.input, kg: e.kg, truck: e.truck, shown: true, lastId: e.id }); qSave(); qGo('calc'); }
+    else if (ev.target.closest('#qExpOne')) download([e], dayKey(e.ts));
+    else if (ev.target.closest('#qDelOne')) ask('¿Borrar este cálculo?', 'Borrar', () => { Q.history = Q.history.filter(x => x.id !== e.id); qSave(); qGo('history'); });
+  });
+
+  $('qAskNo').addEventListener('click', () => { $('qAsk').hidden = true; });
+  $('qAskOk').addEventListener('click', () => { $('qAsk').hidden = true; if (qAskFn) qAskFn(); });
+  $('qAsk').addEventListener('click', ev => { if (ev.target === $('qAsk')) $('qAsk').hidden = true; });
+
+  if (Q.quick) setQuick(true);
+}
+
 init();
 </script>
 </body>

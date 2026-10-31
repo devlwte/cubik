@@ -1,4 +1,4 @@
-# Cubik — Calculadora de Cubicaje y Estiba de Bultos
+# Cubik · Calculadora de Cubicaje y Estiba de Bultos
 
 **Cubik** es una herramienta de patio desarrollada por **KyrnForge** para coteros, despachadores, encargados de bodega y conductores de carga. Permite calcular en segundos cómo armar, distribuir y trabar cargas de bultos (25, 40 o 50 kg) dentro del camión, verificando el límite de peso en báscula y el equilibrio entre los ejes delantero y trasero.
 
@@ -60,6 +60,19 @@ Los bultos que no alcanzan a completar un piso entero se ubican encima de la fil
    * **Ajustar a mano**: habilita controles individuales (`▲` / `▼`) debajo del plano para subir o bajar bultos en cada fila según la necesidad del cargue, indicando en tiempo real si cuadra con el total o cuántos bultos faltan/sobran.
 4. **Hoja de cargue**: revisa el resumen superior y las instrucciones numeradas al final de la pantalla. Presiona **Compartir carga por WhatsApp** o **Copiar texto** para enviar la orden de estiba.
 
+### Modo Rápido (calculadora)
+Para quien prefiere no recorrer toda la pantalla: el botón de arriba a la derecha cambia entre el modo completo y el **Modo Rápido**, una calculadora que usa el mismo motor de reparto pero guarda su propio estado e historial.
+
+* Se escribe `bultos,filas,ancho` y se toca `=`: por ejemplo `300,8,5`. Filas y ancho son opcionales (si faltan se usan las filas del camión y 5 de ancho). El `+` suma pedidos dentro del total (`120+80+100,8,5`).
+* Para corregir, se toca el número en la pantalla (por ejemplo el `8` o el `130`): queda resaltado, se escribe el nuevo y se toca `=`.
+* Las teclas **kg** (25 / 40 / 50) y **camión** (Auto, Turbo, Sencillo, Doble, Mula) cambian con cada toque.
+* El resultado sale debajo de los números: `4 filas → 38 = 7 pisos de 5 + 3 atrav.`
+* **Varios productos con `÷`**: `300,8,5÷130,100,70` dice qué lleva cada producto, cargando desde el fondo (`P1 · 130` → `3 filas de 38 + 16 en fila 4`), y debajo cuántas filas hay de cada tamaño y cómo se arman (`4 filas de 38 = 7 pisos de 5 + 3 atrav.`). Lo que sobra del total pasa solo a ser un producto más, marcado como **RESTO** (`300,8,5÷130` → P2; `300,8,5÷130,100` → P3 con 70). Si los productos pasan del total, se muestra el aviso y no se guarda. Máximo 4 productos.
+* **Historial** (botón de arriba a la izquierda): carpetas por día, solo los días en que se calculó algo. Cada cálculo abre sus 4 vistas, WhatsApp y "Usar en calculadora". Se puede borrar un cálculo, un día o todo, y **exportar / importar** un archivo `.json` que sirve igual en la web y en Android para pasar el historial a otro dispositivo.
+
+### Actualizaciones (Android)
+Al abrir la app, Cubik revisa si hay una versión nueva en [Releases](../../releases), como mucho una vez cada 4 horas. Si la hay, avisa y, al tocar **Actualizar**, descarga el APK y abre el instalador de Android. La primera vez el teléfono pide permitir que Cubik instale apps.
+
 ---
 
 ## Estructura del proyecto
@@ -76,6 +89,10 @@ cubik/
         ├── Drawings.kt         # Motor vectorial en Canvas para las 4 vistas del camión
         ├── Ui.kt               # Interfaz de usuario y controles táctiles de patio
         ├── Store.kt            # Persistencia local automática en SharedPreferences
+        ├── Calc.kt             # Modo Rápido: lectura de lo escrito, productos y textos cortos
+        ├── History.kt          # Modo Rápido: estado, historial por días y respaldo JSON
+        ├── CalcUi.kt           # Modo Rápido: calculadora, historial y detalle
+        ├── Updater.kt          # Busca e instala versiones nuevas desde GitHub Releases
         └── Theme.kt            # Paleta industrial y tipografía Barlow / Barlow Condensed
 ```
 

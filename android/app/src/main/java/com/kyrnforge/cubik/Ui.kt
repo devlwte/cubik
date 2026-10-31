@@ -171,7 +171,7 @@ fun RepeatBtn(text: String, desc: String, modifier: Modifier = Modifier, height:
 }
 
 @Composable
-private fun Icon(d: String, size: Dp = 28.dp, color: Color = C.ink, view: Float = 28f, filled: Boolean = false) {
+internal fun Icon(d: String, size: Dp = 28.dp, color: Color = C.ink, view: Float = 28f, filled: Boolean = false) {
     val path = remember(d) { PathParser().parsePathString(d).toPath() }
     Canvas(Modifier.size(size)) {
         val s = this.size.width / view
@@ -197,7 +197,7 @@ private fun bold(s: String, size: TextUnit = 23.sp): AnnotatedString = buildAnno
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CubikScreen(store: Store) {
+fun CubikScreen(store: Store, onQuick: () -> Unit) {
     val s = store.load
     val scope = rememberCoroutineScope()
     val viewReq = remember { BringIntoViewRequester() }
@@ -209,7 +209,7 @@ fun CubikScreen(store: Store) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(Modifier.widthIn(max = 640.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                Header()
+                Header(onQuick)
                 BagsCard(s, ::up)
                 TruckCard(s, ::up)
                 ModeCard(s, ::up) { scope.launch { delay(120); viewReq.bringIntoView() } }
@@ -231,7 +231,7 @@ fun CubikScreen(store: Store) {
 }
 
 @Composable
-private fun Header() = Row(Modifier.padding(top = 16.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+private fun Header(onQuick: () -> Unit) = Row(Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
     Canvas(Modifier.size(44.dp)) {
         val k = size.width / 44f
         fun r(x: Float, y: Float, w: Float, h: Float, c: Color, rx: Float = 2f) =
@@ -242,10 +242,11 @@ private fun Header() = Row(Modifier.padding(top = 16.dp, bottom = 4.dp), vertica
         r(14f, 8f, 16f, 7f, C.traba)
     }
     Spacer(Modifier.width(12.dp))
-    Column {
+    Column(Modifier.weight(1f)) {
         BasicText("CUBIK", style = cond(30.sp, spacing = 0.02.em))
         BasicText("Cubicaje y estiba de bultos · KyrnForge", style = body(14.sp, C.muted))
     }
+    TopIcon(KEYPAD_ICON, "Pasar al modo rápido", onQuick)
 }
 
 @Composable
@@ -415,7 +416,7 @@ private fun Legend() = Row(horizontalArrangement = Arrangement.spacedBy(16.dp), 
 }
 
 @Composable
-private fun ViewsCard(s: Load, up: ((Load) -> Load) -> Unit) = Card {
+internal fun ViewsCard(s: Load, up: ((Load) -> Load) -> Unit) = Card {
     Grid(4) {
         TABS.forEach { (v, label, d) ->
             val on = s.view == v
@@ -506,7 +507,7 @@ private fun ViewsCard(s: Load, up: ((Load) -> Load) -> Unit) = Card {
     }
 }
 
-private const val WA_ICON = "M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3z"
+internal const val WA_ICON = "M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3z"
 
 @Composable
 private fun RouteCard(s: Load) = Card {
@@ -544,7 +545,7 @@ private fun RouteCard(s: Load) = Card {
 }
 
 /** Abre WhatsApp (normal o Business) con el texto listo; si no está instalado, el menú de compartir de Android. */
-private fun shareWhatsApp(ctx: Context, text: String) {
+internal fun shareWhatsApp(ctx: Context, text: String) {
     val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text)
     val wa = listOf("com.whatsapp", "com.whatsapp.w4b").firstOrNull { ctx.packageManager.getLaunchIntentForPackage(it) != null }
     try {
