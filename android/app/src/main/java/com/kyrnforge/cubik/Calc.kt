@@ -1,9 +1,10 @@
 package com.kyrnforge.cubik
 
-// Formato: bultos,filas,ancho÷producto1,producto2,…  (filas, ancho y productos son opcionales).
+// Formato: bultos÷filas×ancho,producto1,producto2,…  (filas, ancho y productos son opcionales).
 
 const val MAX_PRODUCTS = 4
 const val MAX_BAGS = 3000
+const val EXAMPLE = "Ejemplo: 350÷12×5"
 
 val TRUCK_CYCLE: List<Truck?> = listOf(null) + Truck.entries
 
@@ -17,13 +18,22 @@ sealed interface CalcResult {
     data class Error(val text: String, val hint: String) : CalcResult
 }
 
-data class Expr(val head: List<String>, val products: List<String>?)
+data class Expr(val bultos: String, val filas: String?, val ancho: String?, val products: List<String>?)
+
+private val EXPR = Regex("^([^÷×,]*)(?:÷([^×,]*))?(?:×([^,]*))?(?:,(.*))?$")
 
 fun splitExpr(input: String): Expr {
-    val i = input.indexOf('÷')
-    val head = (if (i < 0) input else input.substring(0, i)).split(',')
-    val prods = if (i < 0) null else input.substring(i + 1).split(',')
-    return Expr(head, prods)
+    val g = EXPR.find(input)?.groups ?: return Expr(input, null, null, null)
+    return Expr(g[1]?.value.orEmpty(), g[2]?.value, g[3]?.value, g[4]?.value?.split(','))
+}
+
+/** Historial de la 1.1 ("bultos,filas,ancho÷productos") al formato nuevo ("bultos÷filas×ancho,productos"). */
+fun fromV1(s: String): String {
+    val i = s.indexOf('÷')
+    val head = (if (i < 0) s else s.substring(0, i)).split(',')
+    val f = head.getOrNull(1).orEmpty()
+    val a = head.getOrNull(2).orEmpty()
+    return head[0] + (if (f.isNotEmpty()) "÷$f" else "") + (if (a.isNotEmpty()) "×$a" else "") + (if (i >= 0) "," + s.substring(i + 1) else "")
 }
 
 private fun sumOf(part: String): Int? {
@@ -34,25 +44,29 @@ private fun sumOf(part: String): Int? {
 
 fun calculate(input: String, kg: Int, truck: Truck?): CalcResult {
     val e = splitExpr(input)
-    val n = sumOf(e.head[0]) ?: return CalcResult.Error("Escriba los bultos", "Ejemplo: 300,8,5")
-    if (n < 1) return CalcResult.Error("Los bultos deben ser más de 0", "Ejemplo: 300,8,5")
+    val n = sumOf(e.bultos) ?: return CalcResult.Error("Escriba los bultos", EXAMPLE)
+    if (n < 1) return CalcResult.Error("Los bultos deben ser más de 0", EXAMPLE)
     if (n > MAX_BAGS) return CalcResult.Error("Máximo $MAX_BAGS bultos", "Revise el total de bultos.")
-    val filas = e.head.getOrNull(1)?.takeIf { it.isNotEmpty() }?.toIntOrNull()
+    val filas = e.filas?.takeIf { it.isNotEmpty() }?.toIntOrNull()
     if (filas != null && filas !in 3..16) return CalcResult.Error("Las filas van de 3 a 16", "Usted escribió $filas filas.")
-    val ancho = e.head.getOrNull(2)?.takeIf { it.isNotEmpty() }?.toIntOrNull()
+    val ancho = e.ancho?.takeIf { it.isNotEmpty() }?.toIntOrNull()
     if (ancho != null && ancho !in 3..5) return CalcResult.Error("El ancho va de 3 a 5 bultos", "Usted escribió $ancho de ancho.")
 
     var base = Load(n = n, kg = kg, w = ancho ?: DEFAULT_WIDTH, wManual = ancho != null, autoTruck = truck == null,
         truck = truck ?: Truck.DOBLE, l = (truck ?: Truck.DOBLE).rows).withAutoTruck()
     base = base.copy(l = filas ?: base.truck.rows).distributed()
 
+    splitCount(e)?.let { k ->
+        if (n < k) return CalcResult.Error("No alcanzan los bultos para $k productos", "Escriba más bultos o menos productos.")
+        return CalcResult.Ok(base, List(k) { Product(n / k + if (it < n % k) 1 else 0) })
+    }
     val written = e.products?.filter { it.isNotEmpty() }?.map { sumOf(it) ?: 0 } ?: return CalcResult.Ok(base, emptyList())
     if (written.isEmpty()) return CalcResult.Ok(base, emptyList())
     if (written.any { it < 1 }) return CalcResult.Error("Cada producto debe tener bultos", "Quite el producto en 0.")
     if (written.size > MAX_PRODUCTS) return CalcResult.Error("Máximo $MAX_PRODUCTS productos", "Junte algunos productos.")
     val s = written.sum()
     val sumTxt = written.joinToString(" + ")
-    if (written.size == 1 && written[0] == n) return CalcResult.Error("Para dividir se necesitan al menos 2 productos", "Escriba menos de $n o quite el ÷.")
+    if (written.size == 1 && written[0] == n) return CalcResult.Error("Para dividir se necesitan al menos 2 productos", "Escriba menos de $n o quite la coma.")
     if (s > n) return if (written.size == 1) CalcResult.Error("$s bultos pasa del total ($n)", "El producto debe ser menor que el total.")
         else CalcResult.Error("$sumTxt = $s bultos, pasa del total ($n)", "Revise los productos: no pueden pasar de $n.")
     if (s == n) return CalcResult.Ok(base, written.map { Product(it) })
@@ -60,6 +74,9 @@ fun calculate(input: String, kg: Int, truck: Truck?): CalcResult {
     if (written.size == MAX_PRODUCTS) return CalcResult.Error("Sobran ${n - s} bultos y ya hay $MAX_PRODUCTS productos", "Junte algunos productos.")
     return CalcResult.Ok(base, written.map { Product(it) } + Product(n - s, rest = true))
 }
+
+/** ",2" a ",4" (un solo número) = dividir la carga en esa cantidad de productos iguales. */
+fun splitCount(e: Expr): Int? = e.products?.singleOrNull()?.toIntOrNull()?.takeIf { it in 2..MAX_PRODUCTS }
 
 fun numberSpans(input: String): List<IntRange> = Regex("[0-9]+").findAll(input).map { it.range }.toList()
 
@@ -69,9 +86,12 @@ fun numberAt(input: String, offset: Int): Int? =
 fun numberName(input: String, k: Int): String {
     val r = numberSpans(input).getOrNull(k) ?: return ""
     val before = input.substring(0, r.first)
-    val div = before.indexOf('÷')
-    if (div >= 0) return "el producto ${before.substring(div).count { it == ',' } + 1}"
-    return when (before.count { it == ',' }) { 0 -> "los bultos"; 1 -> "las filas"; else -> "el ancho" }
+    return when {
+        ',' in before -> if (splitCount(splitExpr(input)) != null) "cuántos productos" else "el producto ${before.count { it == ',' }}"
+        '×' in before -> "el ancho"
+        '÷' in before -> "las filas"
+        else -> "los bultos"
+    }
 }
 
 /** Tecla sobre el número tocado: la primera cifra lo reemplaza y ⌫ borra de a una (si se vacía queda 0). */
@@ -149,4 +169,81 @@ fun Load.quickShareText(products: List<Product>): String {
     val lines = mutableListOf(shareText(), "", "*Productos (fondo → compuerta):*")
     products.forEachIndexed { i, p -> lines += "${productLabel(i, p)} → ${where[i]}" + if (p.rest) " (resto)" else "" }
     return lines.joinToString("\n")
+}
+
+/** Formas de repartir los mismos bultos en las mismas filas, sin repetir:
+ *  parejo (260÷9 → 29 y 28), con un solo tipo de remate (30 y 28) y en pisos completos (30 y 25). */
+data class Option(val tag: String, val load: Load)
+
+fun Load.options(): List<Option> {
+    val out = mutableListOf<Load>()
+    fun add(o: Load) { if (out.none { it.rows.sorted() == o.rows.sorted() }) out += o }
+    add(copy(rows = List(l) { n / l + if (it < n % l) 1 else 0 }))
+    add(this)
+    val pisos = n / w
+    val base = pisos / l
+    val ex = pisos % l
+    if (base > 0) add(copy(rows = MutableList(l) { (base + if (it < ex) 1 else 0) * w }.also { it[ex] += n % w }))
+    return out.mapIndexed { i, o -> Option("ABC"[i].toString(), o) }
+}
+
+/** "5 pisos + 4 encima" para una fila de n bultos. */
+fun Load.pisosText(n: Int): String {
+    val r = row(n)
+    val top = if (r.t == 0) "" else if (topLayer(w, r.t).crossed) "${r.t} atrav." else "${r.t} encima"
+    return when {
+        r.p == 0 -> "en el piso"
+        top.isEmpty() -> "${r.p} ${plural(r.p, "piso", "pisos")}"
+        else -> "${r.p} ${plural(r.p, "piso", "pisos")} + $top"
+    }
+}
+
+// Calculadora normal
+
+const val OPS = "+−×÷"
+
+/** + − × ÷ con prioridad, decimales y % (200+10% = 220). Null si no se puede (por ejemplo, ÷ 0). */
+fun evalMath(s: String): Double? {
+    val toks = Regex("[0-9.]+%?|[+−×÷]").findAll(s.trimEnd(*OPS.toCharArray())).map { it.value }.toList()
+    if (toks.none { it[0] !in OPS }) return null
+    var total = 0.0
+    var term = 0.0
+    var op = '+'
+    var seen = false
+    for (t in toks) {
+        if (t[0] in OPS) { op = t[0]; continue }
+        val pct = t.endsWith('%')
+        val x = t.trimEnd('%').toDoubleOrNull() ?: return null
+        when (op) {
+            '+', '−' -> { total += term; val v = if (pct && seen) total * x / 100 else if (pct) x / 100 else x; term = if (op == '+') v else -v }
+            '×' -> term *= if (pct) x / 100 else x
+            else -> { val v = if (pct) x / 100 else x; if (v == 0.0) return null; term /= v }
+        }
+        seen = true
+    }
+    return (total + term).takeIf { it.isFinite() }
+}
+
+fun fmtNum(v: Double): String = java.math.BigDecimal(v).round(java.math.MathContext(12)).stripTrailingZeros().toPlainString()
+    .let { if (it == "-0") "0" else it }.replace('-', '−')
+
+fun pressMath(s: String, key: String): String {
+    val last = s.lastOrNull()
+    val token = s.takeLastWhile { it.isDigit() || it == '.' }
+    if (s.length >= 40 && key != "⌫") return s
+    return when {
+        key == "⌫" -> s.dropLast(1)
+        key == "." -> if ('.' in token || last == '%') s else if (token.isEmpty()) s + "0." else "$s."
+        key == "%" -> if (last?.isDigit() == true) "$s%" else s
+        key in OPS -> when {
+            s.isEmpty() || s == "−" -> if (key == "−") "−" else s
+            last!! in OPS -> s.dropLast(1) + key
+            last == '.' -> s.dropLast(1) + key
+            else -> s + key
+        }
+        last == '%' || token.length >= 12 -> s
+        key == "00" -> if (token.isNotEmpty() && token != "0") s + "00" else s
+        token == "0" -> s.dropLast(1) + key
+        else -> s + key
+    }
 }

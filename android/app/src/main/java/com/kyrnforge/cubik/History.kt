@@ -40,7 +40,7 @@ fun List<Entry>.days(): List<Day> =
 // Archivo de respaldo: el mismo formato en la web y en Android.
 
 fun exportJson(entries: List<Entry>): String = JSONObject()
-    .put("app", "cubik").put("type", "historial").put("version", 1)
+    .put("app", "cubik").put("type", "historial").put("version", 2)
     .put("entries", JSONArray().apply {
         entries.sortedBy { it.ts }.forEach {
             put(JSONObject().put("id", it.id).put("ts", it.ts).put("input", it.input).put("kg", it.kg).put("truck", truckKey(it.truck)))
@@ -51,9 +51,10 @@ fun parseBackup(text: String): List<Entry>? = try {
     val o = JSONObject(text)
     if (o.optString("app") != "cubik") null else {
         val a = o.getJSONArray("entries")
+        val v1 = o.optInt("version", 1) < 2
         (0 until a.length()).mapNotNull { i ->
             val e = a.optJSONObject(i) ?: return@mapNotNull null
-            val input = e.optString("input")
+            val input = e.optString("input").let { if (v1) fromV1(it) else it }
             val kg = e.optInt("kg", 50)
             if (input.isEmpty() || kg !in BAG_KG) null
             else Entry(e.optString("id").ifEmpty { UUID.randomUUID().toString() }, e.optLong("ts", System.currentTimeMillis()), input, kg, truckOf(e.optString("truck")))
@@ -64,7 +65,7 @@ fun parseBackup(text: String): List<Entry>? = try {
 class QuickStore(context: Context) {
     private val prefs = context.getSharedPreferences("cubik_calc", Context.MODE_PRIVATE)
 
-    var quick by mutableStateOf(prefs.getBoolean("quick", false))
+    var quick by mutableStateOf(prefs.getBoolean("quick", true))
         private set
     var input by mutableStateOf(prefs.getString("input", "").orEmpty())
         private set
@@ -77,6 +78,34 @@ class QuickStore(context: Context) {
     var history by mutableStateOf(readHistory())
         private set
     private var lastId: String? = prefs.getString("lastId", null)
+    /** Calculadora normal (true) o de bultos (false). */
+    var plain by mutableStateOf(prefs.getBoolean("plain", false))
+        private set
+    var math by mutableStateOf(prefs.getString("math", "").orEmpty())
+        private set
+    var mathPrev by mutableStateOf("")
+        private set
+
+    init {
+        // De la 1.1 a la 1.2: cambia el formato de lo escrito y la app abre en la calculadora.
+        if (prefs.getInt("fmt", 1) < 2) {
+            input = fromV1(input)
+            quick = true
+            save()
+            prefs.edit().putInt("fmt", 2).apply()
+        }
+    }
+
+    fun usePlain(on: Boolean) { plain = on; save() }
+
+    fun typeMath(next: String) { math = next; mathPrev = ""; save() }
+
+    fun mathEquals() {
+        val v = evalMath(math) ?: return
+        mathPrev = math
+        math = fmtNum(v)
+        save()
+    }
 
     fun switchQuick(on: Boolean) { quick = on; save() }
 
@@ -137,7 +166,8 @@ class QuickStore(context: Context) {
 
     private fun save() {
         prefs.edit().putBoolean("quick", quick).putString("input", input).putInt("kg", kg)
-            .putString("truck", truckKey(truck)).putBoolean("shown", shown).putString("lastId", lastId).apply()
+            .putString("truck", truckKey(truck)).putBoolean("shown", shown).putString("lastId", lastId)
+            .putBoolean("plain", plain).putString("math", math).apply()
     }
 
     private fun readHistory(): List<Entry> = prefs.getString("history", null)?.let(::parseBackup).orEmpty()

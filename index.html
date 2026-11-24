@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Cubik Estiba</title>
-<meta name="theme-color" content="#1E2229">
+<meta name="theme-color" content="#111214">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap">
@@ -187,12 +187,15 @@ body.q{overflow:hidden}
 .qtitle{flex:1;text-align:center;font-family:var(--f-disp);font-weight:800;font-size:24px;letter-spacing:.08em;line-height:1.1}
 .qtitle small{display:block;font-family:var(--f-body);font-weight:700;font-size:11px;letter-spacing:.12em;color:var(--traba)}
 .qspace{width:52px;flex:none}
-.qdisp{flex:1;min-height:0;overflow-y:auto;padding:8px 18px;display:flex;flex-direction:column}
-.qdisp>:first-child{margin-top:auto}
+.qdisp{flex:1;min-height:0;overflow:hidden;padding:8px 18px;display:flex;flex-direction:column;justify-content:flex-end}
+.qdisp>*{flex:none}
+.qdisp>.qres{flex:0 1 auto;min-height:0;overflow-y:auto}
 .qlbl{display:flex;justify-content:flex-end;gap:14px;font-weight:700;font-size:12px;letter-spacing:.08em;color:var(--muted)}
 .qlbl .p{color:var(--traba)}
 .qin{font-family:var(--f-disp);font-weight:800;text-align:right;line-height:1.05;margin:4px 0 10px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
-.qin i{font-style:normal;color:var(--kraft-dk)} .qin u{text-decoration:none;color:var(--traba)}
+.qin u{text-decoration:none;color:var(--traba)}
+.qprev{text-align:right;font-family:var(--f-disp);font-weight:700;font-size:26px;color:var(--muted);overflow-wrap:anywhere}
+.qlive{text-align:right;font-family:var(--f-disp);font-weight:700;font-size:30px;color:var(--muted);margin-top:-6px}
 .qin.empty{color:var(--line);font-size:66px;margin-bottom:0}
 .qhelp{text-align:right;color:var(--muted);font-size:13px;font-weight:700;margin:-6px 0 10px}
 .qhelp.sel{color:var(--traba)}
@@ -205,31 +208,41 @@ body.q{overflow:hidden}
 .qres .h span:first-child{flex:1}
 .qres .ok{color:var(--green)} .qres .bad{color:var(--red)}
 .qres .w{color:var(--red);font-weight:700;font-size:14px}
-.qres .l{font-family:var(--f-disp);font-weight:700;font-size:min(20px,5.3vw);line-height:1.2}
-.qres .l.lg{font-size:min(17px,4.5vw)}
-.qres .l em{font-style:normal;color:var(--traba)}
 .qres .sep{height:2px;background:var(--line);margin:6px 0}
-.qres .pl{display:grid;gap:1px;font-family:var(--f-disp);font-weight:700;line-height:1.2;padding:2px 0}
-.qres .pn{display:flex;align-items:center;gap:8px;font-size:min(17px,4.5vw);color:var(--muted)}
-.qres .pw{font-size:min(19px,5vw);padding-left:22px}
-.qres .pw span{white-space:nowrap}
-.qres .dot{width:14px;height:14px;border-radius:4px;flex:none}
-.qres .rest{font-family:var(--f-body);font-weight:700;font-size:11px;color:var(--traba);border:1.5px solid var(--traba);border-radius:6px;padding:0 5px;flex:none}
+.qres .opt{display:flex;gap:6px;padding:4px;border-radius:12px;border:0;background:none;color:inherit;font:inherit;text-align:left;width:100%}
+.qres button.opt{cursor:pointer}
+.qres .opt.on{background:var(--sel)}
+.qres .opt>b{font-family:var(--f-disp);font-weight:800;font-size:26px;width:28px;flex:none;color:var(--traba);line-height:1.1}
+.qres .opt>div{flex:1;display:grid}
+.qres .ol{font-family:var(--f-disp);font-weight:700;font-size:min(23px,6vw);line-height:1.2}
+.qres .ol small{font-family:var(--f-body);font-size:13px;color:var(--muted);margin-left:10px;white-space:nowrap}
+.qres .opt>span{font-size:12px;font-weight:700;color:var(--muted);padding-top:6px;white-space:nowrap}
+.qres .pr{display:flex;gap:8px;font-family:var(--f-disp);font-weight:700;font-size:min(18px,4.8vw);line-height:1.25;padding:2px 0}
+.qres .pr span span{white-space:nowrap}
+.qres .pr em{font-style:normal;color:var(--traba)} .qres .pr i{font-style:normal;color:var(--muted)}
+.qres .dot{width:12px;height:12px;border-radius:3px;flex:none;margin-top:5px;box-shadow:0 0 0 1px var(--muted)}
 .qres .et{font-family:var(--f-disp);font-weight:700;font-size:20px;color:var(--red)}
 .qres .eh{font-size:14px;color:var(--muted);font-weight:600}
-.qpad{--kh:clamp(42px,calc((47dvh - 64px) / 5),76px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;padding:12px 14px;background:rgba(220,226,232,.55)}
-.key{height:var(--kh);border-radius:16px;border:2px solid var(--line);background:var(--card);box-shadow:0 3px 0 var(--line);
-  font-family:var(--f-disp);font-weight:800;font-size:34px;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;
+/* Calculadora oscura con operadores naranjas */
+#qCalc{--bg:#111214;--card:#1C1D20;--ink:#F5F5F7;--muted:#9A9DA3;--line:#34363B;--traba:#FF9500;--traba-dk:#FF9500;--kraft-dk:#FF9500;
+  --sel:#4A3A1C;--red:#FF6B5E;--red-bg:#1C1D20;--green:#4CD97B;color:var(--ink)}
+#quick:has(#qCalc:not([hidden])){background:#111214}
+#qCalc .ticon{width:48px;height:48px;border:0;background:#2D2F33;color:var(--ink)}
+#qCalc .ticon circle{fill:#2D2F33}
+.qsw{flex:1;margin:0 10px;height:44px;border-radius:22px;background:#2D2F33;padding:4px;display:flex}
+.qsw button{flex:1;border:0;border-radius:18px;background:none;color:var(--muted);font-family:var(--f-disp);font-weight:800;font-size:15px;letter-spacing:.06em;cursor:pointer;padding:0}
+.qsw button[aria-pressed="true"]{background:#FF9500;color:#fff}
+.qpad{--kh:clamp(42px,calc((47dvh - 64px) / 5),76px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:12px 14px}
+.key{height:var(--kh);border-radius:calc(var(--kh) / 2.6);border:0;background:#2D2F33;
+  font-family:var(--f-disp);font-weight:700;font-size:34px;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;
   cursor:pointer;user-select:none;-webkit-user-select:none;padding:0;line-height:1}
-.key:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
-.key small{font-family:var(--f-body);font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--kraft-edge);margin-top:2px}
-.key svg{width:30px;height:30px;fill:currentColor;stroke:currentColor;stroke-width:3.4;stroke-linecap:round}
-.key.cl{color:var(--red)}
-.key.op{background:var(--steel);border-color:var(--ink);box-shadow:0 3px 0 var(--ink);color:#fff}
-.key.fn{background:var(--sel);border-color:var(--kraft-dk);box-shadow:0 3px 0 var(--kraft-dk);font-size:26px}
+.key:active{filter:brightness(.75)}
+.key small{font-family:var(--f-body);font-weight:700;font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.75);margin-top:2px}
+.key svg{width:28px;height:28px;fill:currentColor;stroke:currentColor;stroke-width:3.4;stroke-linecap:round}
+.key.op{background:#FF9500}
+.key.fn{background:#505359;font-size:26px}
 .key.fn.t{font-size:22px} .key.fn.t.long{font-size:17px}
 @media (max-height:740px){.key.fn{font-size:min(26px,calc(var(--kh) * .5))} .key.fn.t{font-size:min(22px,calc(var(--kh) * .42))} .key.fn.t.long{font-size:min(17px,calc(var(--kh) * .34))} .key small{font-size:9px;margin-top:0}}
-.key.eq{grid-column:span 2;background:var(--traba);border-color:var(--traba-dk);box-shadow:0 3px 0 var(--traba-dk);color:#fff}
 .qlist{flex:1;min-height:0;overflow-y:auto;padding:6px 16px;display:grid;gap:10px;align-content:start}
 .fold{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:var(--card);border:2px solid var(--line);cursor:pointer;width:100%;font:inherit;text-align:left;color:var(--ink)}
 .fold.open{border-color:var(--kraft-dk);background:#FFFAF1}
@@ -374,7 +387,7 @@ body.q{overflow:hidden}
     <section class="qscr" id="qCalc">
       <div class="qbar">
         <button class="ticon" id="qHist" aria-label="Historial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4M12 7v5l3 2"/></svg></button>
-        <div class="qtitle">CUBIK<small>RÁPIDO</small></div>
+        <div class="qsw" role="group" aria-label="Tipo de calculadora"><button data-plain="1">CALCULADORA</button><button data-plain="0">BULTOS</button></div>
         <button class="ticon" id="toFull" aria-label="Pasar al modo completo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9h12v8H2zM14 11h4l3 3v3h-7zM4 9V6h4v3M8 9V6h4v3"/><circle cx="6" cy="18" r="2" fill="#F4F5F7"/><circle cx="17" cy="18" r="2" fill="#F4F5F7"/></svg></button>
       </div>
       <div class="qdisp" id="qDisp"></div>
@@ -900,12 +913,13 @@ function init() {
 }
 
 // Modo Rápido
-// Formato: bultos,filas,ancho÷producto1,producto2,…  (filas, ancho y productos son opcionales).
+// Formato: bultos÷filas×ancho,producto1,producto2,…  (filas, ancho y productos son opcionales).
 const MAX_PRODUCTS = 4, MAX_BAGS = 3000;
 const TRUCK_CYCLE = [null, 'turbo', 'sencillo', 'doble', 'mula'];
 const PRODUCT_COLORS = ['#C28B46', '#2C3338', '#2F7D8C', '#6B7F2A'];
 const MONTHS = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
-const Q = { quick: false, input: '', kg: 50, truck: null, shown: false, lastId: null, history: [] };
+const Q = { quick: true, input: '', kg: 50, truck: null, shown: false, lastId: null, history: [], plain: false, math: '', mathPrev: '', fmt: 2 };
+const EXAMPLE = 'Ejemplo: 350÷12×5';
 let qSel = null, qFresh = false;
 let qScreen = 'calc', qDetailId = null, qDetLoad = null, qOpen = null, qAskFn = null, qToastT = 0;
 
@@ -917,7 +931,10 @@ function qLoad() {
       Object.assign(Q, d);
       if (!BAG_KG.includes(Q.kg)) Q.kg = 50;
       if (!TRUCKS[Q.truck]) Q.truck = null;
-      Q.history = Array.isArray(Q.history) ? cleanEntries(Q.history) : [];
+      // De la 1.1 a la 1.2: cambia el formato de lo escrito y la app abre en la calculadora.
+      const v1 = d.fmt !== 2;
+      Q.history = Array.isArray(Q.history) ? cleanEntries(Q.history, v1) : [];
+      if (v1) { Q.input = fromV1(Q.input || ''); Q.quick = true; Q.fmt = 2; qSave(); }
     }
   } catch (e) {}
 }
@@ -931,8 +948,13 @@ function withS(state, fn) {
 }
 
 function splitExpr(input) {
-  const i = input.indexOf('÷');
-  return { head: (i < 0 ? input : input.slice(0, i)).split(','), products: i < 0 ? null : input.slice(i + 1).split(',') };
+  const m = input.match(/^([^÷×,]*)(?:÷([^×,]*))?(?:×([^,]*))?(?:,(.*))?$/) || [input, input];
+  return { bultos: m[1], filas: m[2] ?? null, ancho: m[3] ?? null, products: m[4] === undefined ? null : m[4].split(',') };
+}
+// Historial de la 1.1 ("bultos,filas,ancho÷productos") al formato nuevo ("bultos÷filas×ancho,productos").
+function fromV1(s) {
+  const i = s.indexOf('÷'), head = (i < 0 ? s : s.slice(0, i)).split(',');
+  return head[0] + (head[1] ? '÷' + head[1] : '') + (head[2] ? '×' + head[2] : '') + (i >= 0 ? ',' + s.slice(i + 1) : '');
 }
 function sumOf(part) {
   const nums = part.split('+').filter(x => x);
@@ -941,11 +963,11 @@ function sumOf(part) {
 }
 
 function calculate(input, kg, truck) {
-  const e = splitExpr(input), n = sumOf(e.head[0]);
-  if (n === null) return { ok: false, text: 'Escriba los bultos', hint: 'Ejemplo: 300,8,5' };
-  if (n < 1) return { ok: false, text: 'Los bultos deben ser más de 0', hint: 'Ejemplo: 300,8,5' };
+  const e = splitExpr(input), n = sumOf(e.bultos);
+  if (n === null) return { ok: false, text: 'Escriba los bultos', hint: EXAMPLE };
+  if (n < 1) return { ok: false, text: 'Los bultos deben ser más de 0', hint: EXAMPLE };
   if (n > MAX_BAGS) return { ok: false, text: `Máximo ${MAX_BAGS} bultos`, hint: 'Revise el total de bultos.' };
-  const filas = e.head[1] ? +e.head[1] : null, ancho = e.head[2] ? +e.head[2] : null;
+  const int = x => /^\d+$/.test(x || '') ? +x : null, filas = int(e.filas), ancho = int(e.ancho);
   if (filas !== null && (filas < 3 || filas > 16)) return { ok: false, text: 'Las filas van de 3 a 16', hint: `Usted escribió ${filas} filas.` };
   if (ancho !== null && (ancho < 3 || ancho > 5)) return { ok: false, text: 'El ancho va de 3 a 5 bultos', hint: `Usted escribió ${ancho} de ancho.` };
 
@@ -958,12 +980,15 @@ function calculate(input, kg, truck) {
     return { ...S, rows: [...S.rows] };
   });
 
+  const k = splitCount(e);
+  if (k) return n < k ? { ok: false, text: `No alcanzan los bultos para ${k} productos`, hint: 'Escriba más bultos o menos productos.' }
+    : { ok: true, load, products: [...Array(k)].map((_, i) => ({ n: Math.floor(n / k) + (i < n % k ? 1 : 0) })) };
   const written = (e.products || []).filter(x => x).map(x => sumOf(x) ?? 0);
   if (!written.length) return { ok: true, load, products: [] };
   if (written.some(x => x < 1)) return { ok: false, text: 'Cada producto debe tener bultos', hint: 'Quite el producto en 0.' };
   if (written.length > MAX_PRODUCTS) return { ok: false, text: `Máximo ${MAX_PRODUCTS} productos`, hint: 'Junte algunos productos.' };
   const s = sum(written), txt = written.join(' + ');
-  if (written.length === 1 && written[0] === n) return { ok: false, text: 'Para dividir se necesitan al menos 2 productos', hint: `Escriba menos de ${n} o quite el ÷.` };
+  if (written.length === 1 && written[0] === n) return { ok: false, text: 'Para dividir se necesitan al menos 2 productos', hint: `Escriba menos de ${n} o quite la coma.` };
   if (s > n) return written.length === 1
     ? { ok: false, text: `${s} bultos pasa del total (${n})`, hint: 'El producto debe ser menor que el total.' }
     : { ok: false, text: `${txt} = ${s} bultos, pasa del total (${n})`, hint: `Revise los productos: no pueden pasar de ${n}.` };
@@ -973,20 +998,23 @@ function calculate(input, kg, truck) {
   return { ok: true, load, products: [...written.map(n => ({ n })), { n: n - s, rest: true }] };
 }
 
-function rowLines(load) {
-  const g = [];
-  load.rows.forEach(n => { const x = g.find(x => x.n === n); x ? x.c++ : g.push({ n, c: 1 }); });
-  return g.map(({ n, c }) => {
-    const p = Math.floor(n / load.W), t = n % load.W;
-    let main, top = null;
-    if (!n) main = 'vacía';
-    else if (!p) main = `${n} en el piso`;
-    else {
-      main = `${n} = ${p} ${plural(p, 'piso', 'pisos')} de ${load.W}`;
-      if (t) top = topLayer(load.W, t).crossed ? `${t} atrav.` : `${t} encima`;
-    }
-    return { n, pre: `${c} ${plural(c, 'fila', 'filas')} → `, main, top };
-  });
+// Formas de repartir los mismos bultos en las mismas filas, sin repetir:
+// parejo (260÷9 → 29 y 28), con un solo tipo de remate (30 y 28) y en pisos completos (30 y 25).
+function options(load) {
+  const { N, L, W } = load, out = [], pisos = Math.floor(N / W), base = Math.floor(pisos / L), ex = pisos % L;
+  const key = r => [...r].sort((a, b) => a - b).join();
+  const add = rows => { if (!out.some(o => key(o.rows) === key(rows))) out.push({ ...load, rows }); };
+  add([...Array(L)].map((_, i) => Math.floor(N / L) + (i < N % L ? 1 : 0)));
+  add(load.rows);
+  if (base > 0) { const b = [...Array(L)].map((_, i) => (base + (i < ex ? 1 : 0)) * W); b[ex] += N % W; add(b); }
+  return out.map((o, i) => ({ tag: 'ABC'[i], load: o }));
+}
+// "5 pisos + 4 encima" para una fila de n bultos.
+function pisosText(load, n) {
+  const p = Math.floor(n / load.W), t = n % load.W;
+  if (!p) return 'en el piso';
+  const top = !t ? '' : topLayer(load.W, t).crossed ? `${t} atrav.` : `${t} encima`;
+  return `${p} ${plural(p, 'piso', 'pisos')}` + (top ? ` + ${top}` : '');
 }
 
 function productText(load, products) {
@@ -1019,12 +1047,14 @@ function quickShareText(r) {
     ...r.products.map((p, i) => `${productLabel(i, p)} → ${where[i]}` + (p.rest ? ' (resto)' : ''))].join('\n');
 }
 
+// ",2" a ",4" (un solo número) = dividir la carga en esa cantidad de productos iguales.
+const splitCount = e => e.products && e.products.length === 1 && /^[2-4]$/.test(e.products[0]) ? +e.products[0] : null;
 const numberSpans = s => [...s.matchAll(/\d+/g)].map(m => [m.index, m.index + m[0].length]);
 function numberName(s, k) {
   const r = numberSpans(s)[k]; if (!r) return '';
-  const before = s.slice(0, r[0]), div = before.indexOf('÷');
-  if (div >= 0) return `el producto ${before.slice(div).split(',').length}`;
-  return ['los bultos', 'las filas'][before.split(',').length - 1] || 'el ancho';
+  const before = s.slice(0, r[0]);
+  if (before.includes(',')) return splitCount(splitExpr(s)) ? 'cuántos productos' : `el producto ${before.split(',').length - 1}`;
+  return before.includes('×') ? 'el ancho' : before.includes('÷') ? 'las filas' : 'los bultos';
 }
 function editNumber(s, k, key, fresh) {
   const r = numberSpans(s)[k]; if (!r) return s;
@@ -1034,18 +1064,51 @@ function editNumber(s, k, key, fresh) {
 }
 
 function press(s, key) {
-  const last = s.slice(-1), digitLast = /\d/.test(last), token = (s.match(/\d*$/) || [''])[0];
-  const e = splitExpr(s), inProducts = e.products !== null;
+  const digitLast = /\d/.test(s.slice(-1)), token = (s.match(/\d*$/) || [''])[0];
+  const e = splitExpr(s), inBultos = e.filas === null && e.ancho === null && e.products === null;
   if (s.length >= 40 && key !== '⌫') return s;
   if (key === '⌫') return s.slice(0, -1);
   if (key === '00') return token && token !== '0' && token.length <= 2 ? s + '00' : s;
-  if (key === ',') {
-    if (!digitLast || (!inProducts && e.head.length >= 3) || (inProducts && e.products.length >= MAX_PRODUCTS)) return s;
-    return s + ',';
-  }
-  if (key === '÷') return digitLast && !inProducts ? s + '÷' : s;
-  if (key === '+') return digitLast && (inProducts || e.head.length === 1) ? s + '+' : s;
+  if (key === '÷') return digitLast && inBultos ? s + '÷' : s;
+  if (key === '×') return digitLast && e.ancho === null && e.products === null ? s + '×' : s;
+  if (key === ',') return digitLast && (e.products || []).length < MAX_PRODUCTS ? s + ',' : s;
+  if (key === '+') return digitLast && (inBultos || e.products !== null) ? s + '+' : s;
   if (token.length >= 4) return s;
+  return token === '0' ? s.slice(0, -1) + key : s + key;
+}
+
+// Calculadora normal
+const OPS = '+−×÷';
+// + − × ÷ con prioridad, decimales y % (200+10% = 220). Null si no se puede (por ejemplo, ÷ 0).
+function evalMath(s) {
+  const toks = s.replace(/[+−×÷]+$/, '').match(/[0-9.]+%?|[+−×÷]/g) || [];
+  if (!toks.some(t => !OPS.includes(t[0]))) return null;
+  let total = 0, term = 0, op = '+', seen = false;
+  for (const t of toks) {
+    if (OPS.includes(t[0])) { op = t; continue; }
+    const pct = t.endsWith('%'), x = parseFloat(t);
+    if (isNaN(x)) return null;
+    if (op === '+' || op === '−') { total += term; const v = pct && seen ? total * x / 100 : pct ? x / 100 : x; term = op === '+' ? v : -v; }
+    else if (op === '×') term *= pct ? x / 100 : x;
+    else { const v = pct ? x / 100 : x; if (v === 0) return null; term /= v; }
+    seen = true;
+  }
+  const r = total + term;
+  return isFinite(r) ? r : null;
+}
+const fmtNum = v => { const t = String(+v.toPrecision(12)); return (t === '-0' ? '0' : t).replace('-', '−'); };
+function pressMath(s, key) {
+  const last = s.slice(-1), token = (s.match(/[\d.]*$/) || [''])[0];
+  if (s.length >= 40 && key !== '⌫') return s;
+  if (key === '⌫') return s.slice(0, -1);
+  if (key === '.') return token.includes('.') || last === '%' ? s : token ? s + '.' : s + '0.';
+  if (key === '%') return /\d/.test(last) ? s + '%' : s;
+  if (OPS.includes(key)) {
+    if (!s || s === '−') return key === '−' ? '−' : s;
+    return OPS.includes(last) || last === '.' ? s.slice(0, -1) + key : s + key;
+  }
+  if (last === '%' || token.length >= 12) return s;
+  if (key === '00') return token && token !== '0' ? s + '00' : s;
   return token === '0' ? s.slice(0, -1) + key : s + key;
 }
 
@@ -1069,13 +1132,13 @@ function days() {
 }
 
 // Respaldo: el mismo formato en la web y en Android.
-function cleanEntries(list) {
+function cleanEntries(list, v1) {
   return list.filter(e => e && typeof e.input === 'string' && e.input && BAG_KG.includes(e.kg)).map(e => ({
-    id: String(e.id || newId()), ts: +e.ts || Date.now(), input: e.input, kg: e.kg, truck: TRUCKS[e.truck] ? e.truck : null
+    id: String(e.id || newId()), ts: +e.ts || Date.now(), input: v1 ? fromV1(e.input) : e.input, kg: e.kg, truck: TRUCKS[e.truck] ? e.truck : null
   }));
 }
 function exportJson(entries) {
-  return JSON.stringify({ app: 'cubik', type: 'historial', version: 1,
+  return JSON.stringify({ app: 'cubik', type: 'historial', version: 2,
     entries: [...entries].sort((a, b) => a.ts - b.ts).map(e => ({ id: e.id, ts: e.ts, input: e.input, kg: e.kg, truck: e.truck || 'auto' })) }, null, 2);
 }
 function download(entries, name) {
@@ -1096,47 +1159,90 @@ function ask(text, ok, fn) { $('qAskT').textContent = text; $('qAskOk').textCont
 
 const esc = t => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const editable = t => colored(t).replace(/\d+/g, (() => { let k = 0; return n => `<b data-n="${k}"${k++ === qSel ? ' class="on"' : ''}>${n}</b>`; })());
-const colored = t => esc(t).replace(/,/g, '<i>,</i>').replace(/[÷+]/g, c => `<u>${c}</u>`);
+const colored = t => esc(t).replace(/[÷×+−,%]/g, c => `<u>${c}</u>`);
 function inSize(t) { const l = t.length; return l <= 8 ? 66 : l <= 11 ? 56 : l <= 14 ? 46 : l <= 18 ? 38 : 32; }
 
-function resultHTML(r) {
+// Opciones A, B y C una debajo de otra y, al final, los productos. En el historial se toca una para dibujarla.
+function resultHTML(r, picked) {
   if (!r.ok) return `<div class="qres err"><span class="et">${esc(r.text)}</span><span class="eh">${esc(r.hint)}</span></div>`;
   const L = r.load, T = TRUCKS[L.type], tons = sum(L.rows) * L.kg / 1000, b = balanceOf(L.rows);
   let h = `<div class="qres"><div class="h"><span>${T.name} · ${fmtT(tons)} t · ${L.kg} kg</span>` +
-    `<span class="${b.ok ? 'ok' : 'bad'}">${b.ok ? `Parejo ${b.front}/${b.back} ✓` : `Recostado ${b.front}/${b.back}`}</span></div>`;
+    `<span class="${b.ok ? 'ok' : 'bad'}">${b.ok ? 'Parejo ✓' : 'Recostado'}</span></div>`;
   if (tons > T.t) h += `<span class="w">⚠ Pasa de ${fmtT(T.t)} t ${deName(L.type)} (máx. ${Math.floor(T.t * 1000 / L.kg)} bultos)</span>`;
   const maxTop = Math.max(...L.rows.map(n => Math.floor(n / L.W) + (n % L.W ? 1 : 0)));
   if (maxTop > T.techo) h += `<span class="w">⚠ ${maxTop} pisos pasan la baranda (${T.techo})</span>`;
-  const lines = rowLines(L), lineHTML = l => `${l.main}${l.top ? ` + <em>${l.top}</em>` : ''}`;
-  if (!r.products.length) lines.forEach(l => { h += `<span class="l">${l.pre}${lineHTML(l)}</span>`; });
-  else {
-    const what = productText(L, r.products);
+  const opts = options(L), cur = picked || opts[0].load;
+  opts.forEach(({ tag, load: o }, i) => {
+    const g = [];
+    o.rows.forEach(n => { const x = g.find(x => x.n === n); x ? x.c++ : g.push({ n, c: 1 }); });
+    const on = picked && o.rows.join() === picked.rows.join();
+    const el = picked ? 'button' : 'div';
+    h += `<${el} class="opt${on ? ' on' : ''}"${picked ? ` data-opt="${i}"` : ''}><b>${tag}</b><div>` +
+      g.map(({ n, c }) => `<span class="ol">${c} ${plural(c, 'fila', 'filas')} › ${n}<small>${pisosText(o, n)}</small></span>`).join('') +
+      `</div></${el}>`;
+  });
+  if (r.products.length) {
+    const what = productText(cur, r.products);
     h += '<div class="sep"></div>';
     r.products.forEach((p, i) => {
-      h += `<div class="pl"><span class="pn"><i class="dot" style="background:${PRODUCT_COLORS[i % 4]}"></i>${productLabel(i, p)}` +
-        (p.rest ? '<span class="rest">RESTO</span>' : '') + `</span><span class="pw">${what[i].split(' + ').map(x => `<span>${x}</span>`).join(' + ')}</span></div>`;
+      h += `<div class="pr"><i class="dot" style="background:${PRODUCT_COLORS[i % 4]}"></i><span><em>P${i + 1} ${p.n}</em>${p.rest ? '<i> resto</i>' : ''} › ` +
+        what[i].split(' + ').map(x => `<span>${x}</span>`).join(' + ') + '</span></div>';
     });
-    h += '<div class="sep"></div>';
-    lines.filter(l => l.n > 0).forEach(l => { h += `<span class="l lg">${l.pre.replace(' → ', ' de ')}${lineHTML(l)}</span>`; });
   }
   return h + '</div>';
 }
 
+const SYM = {
+  '÷': '<svg viewBox="0 0 30 30"><path d="M5 15h20"/><circle cx="15" cy="6.5" r="2.6" stroke="none"/><circle cx="15" cy="23.5" r="2.6" stroke="none"/></svg>',
+  '×': '<svg viewBox="0 0 30 30"><path d="M7 7l16 16M23 7L7 23"/></svg>',
+  '+': '<svg viewBox="0 0 30 30"><path d="M5 15h20M15 5v20"/></svg>',
+  '−': '<svg viewBox="0 0 30 30"><path d="M5 15h20"/></svg>',
+  '=': '<svg viewBox="0 0 30 30"><path d="M5 11h20M5 19h20"/></svg>',
+  ',': '<svg viewBox="0 0 30 30"><circle cx="15" cy="18" r="3.8" stroke="none"/><path d="M18 19l-5 8" stroke-width="3"/></svg>'
+};
+const PAD_BULTOS = [
+  ['C', 'fn', 'Borrar todo'], ['⌫', 'fn', 'Borrar uno'], ['kg', 'fn'], ['truck', 'fn t'],
+  ['7'], ['8'], ['9'], ['÷', 'op', 'Filas de fondo a compuerta', 'FILAS'],
+  ['4'], ['5'], ['6'], ['×', 'op', 'Bultos a lo ancho', 'ANCHO'],
+  ['1'], ['2'], ['3'], ['+', 'op', 'Sumar'],
+  ['0'], ['00'], [',', 'fn', 'Coma: agrega un producto', 'PRODUCTO'], ['=', 'op', 'Calcular']
+];
+const PAD_PLAIN = [
+  ['C', 'fn', 'Borrar todo'], ['⌫', 'fn', 'Borrar uno'], ['%', 'fn', 'Por ciento'], ['÷', 'op', 'Dividir'],
+  ['7'], ['8'], ['9'], ['×', 'op', 'Multiplicar'],
+  ['4'], ['5'], ['6'], ['−', 'op', 'Restar'],
+  ['1'], ['2'], ['3'], ['+', 'op', 'Sumar'],
+  ['0'], ['00'], ['.', '', 'Punto decimal'], ['=', 'op', 'Resultado']
+];
+function renderPad() {
+  $('qPad').dataset.plain = String(Q.plain);
+  $('qPad').innerHTML = (Q.plain ? PAD_PLAIN : PAD_BULTOS).map(([k, cls = '', label = k, sub]) =>
+    `<button class="key ${cls}" data-k="${k}" aria-label="${label}">${SYM[k] || (k === 'kg' || k === 'truck' ? '' : k)}${sub ? `<small>${sub}</small>` : ''}</button>`).join('');
+}
+
 function renderCalc() {
+  const d = $('qDisp');
+  document.querySelectorAll('.qsw [data-plain]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.plain === +Q.plain)));
+  if ($('qPad').dataset.plain !== String(Q.plain)) renderPad();
+  if (Q.plain) {
+    const v = Q.math && !Q.mathPrev && /[+−×÷%]/.test(Q.math) ? evalMath(Q.math) : null;
+    d.innerHTML = (Q.mathPrev ? `<div class="qprev">${colored(Q.mathPrev)}</div>` : '') +
+      `<div class="qin" style="font-size:min(${inSize(Q.math)}px,${(inSize(Q.math) / 3.8).toFixed(1)}vw)" aria-label="Escrito: ${esc(Q.math || '0')}">${colored(Q.math || '0')}</div>` +
+      (v !== null ? `<div class="qlive">= ${fmtNum(v)}</div>` : '');
+    return;
+  }
   if (qSel !== null && qSel >= numberSpans(Q.input).length) qSel = null;
   const e = splitExpr(Q.input);
-  let h = '<div class="qlbl">' + ['BULTOS', 'FILAS', 'ANCHO'].slice(0, Math.max(1, e.head.length)).map(x => `<span>${x}</span>`).join('') +
+  let h = '<div class="qlbl"><span>BULTOS</span>' + (e.filas !== null ? '<span>FILAS</span>' : '') + (e.ancho !== null ? '<span>ANCHO</span>' : '') +
     (e.products ? '<span class="p">PRODUCTOS</span>' : '') + '</div>';
-  const d = $('qDisp');
-  const fs = Q.shown && d.clientHeight < 320 ? Math.min(inSize(Q.input), 34) : inSize(Q.input);
+  const fs = Q.shown && d.clientHeight < 420 ? Math.min(inSize(Q.input), 34) : inSize(Q.input);
   h += Q.input
     ? `<div class="qin" style="font-size:min(${fs}px,${(fs / 3.8).toFixed(1)}vw)" aria-label="Escrito: ${esc(Q.input)}. Toque un número para cambiarlo.">${editable(Q.input)}</div>` +
       (qSel !== null ? `<p class="qhelp sel">Cambiando ${numberName(Q.input, qSel)} · toque = para calcular</p>`
         : fs >= inSize(Q.input) || !Q.shown ? '<p class="qhelp">Toque un número para cambiarlo</p>' : '')
-    : '<div class="qin empty">0</div><p class="qhelp">Escriba bultos,filas,ancho y toque =</p>';
+    : '<div class="qin empty">0</div><p class="qhelp">Bultos ÷ filas × ancho , productos</p>';
   if (Q.shown) h += resultHTML(calculate(Q.input, Q.kg, Q.truck));
   d.innerHTML = h;
-  d.scrollTop = d.scrollHeight;
   const tl = Q.truck ? (Q.truck === 'doble' ? 'DOBLE' : TRUCKS[Q.truck].name.toUpperCase()) : 'AUTO';
   const kgK = $('qPad').querySelector('[data-k="kg"]'), tK = $('qPad').querySelector('[data-k="truck"]');
   kgK.innerHTML = `${Q.kg}<small>KG</small>`;
@@ -1177,11 +1283,11 @@ function renderDetail() {
   if (!e) { qGo('history'); return; }
   const r = entryResult(e);
   $('qDetWhen').textContent = `${dayLabel(dayKey(e.ts))} · ${hourTxt(e.ts)}`.toUpperCase();
-  let h = `<div class="qin" style="font-size:${e.input.length > 16 ? 32 : 40}px">${colored(e.input)}</div>` + resultHTML(r);
+  if (r.ok && !qDetLoad) { const o = options(r.load)[0].load; qDetLoad = { ...o, rows: [...o.rows] }; }
+  let h = `<div class="qin" style="font-size:${e.input.length > 16 ? 32 : 40}px">${colored(e.input)}</div>` + resultHTML(r, qDetLoad);
   if (r.ok) {
-    if (!qDetLoad) qDetLoad = { ...r.load, rows: [...r.load.rows] };
     h += `<section class="card"><div class="tabs" id="qTabs">${$('tabs').innerHTML}</div><div class="field" id="qView">${withS(qDetLoad, viewHTML)}</div></section>`;
-    h += `<a class="btn wa" id="qWa" href="https://wa.me/?text=${encodeURIComponent(quickShareText(r))}" target="_blank" rel="noopener">${$('waBtn').querySelector('svg').outerHTML}Compartir por WhatsApp</a>`;
+    h += `<a class="btn wa" id="qWa" href="https://wa.me/?text=${encodeURIComponent(quickShareText({ ...r, load: qDetLoad }))}" target="_blank" rel="noopener">${$('waBtn').querySelector('svg').outerHTML}Compartir por WhatsApp</a>`;
   }
   h += `<div class="srow"><button class="sbtn" id="qUse" style="flex:1.4">Usar en calculadora</button><button class="sbtn" id="qExpOne">Exportar</button><button class="sbtn del" id="qDelOne">Borrar</button></div>`;
   $('qDet').innerHTML = h;
@@ -1226,24 +1332,14 @@ function equals() {
 
 function initQuick() {
   qLoad();
-  const sym = {
-    '÷': '<svg viewBox="0 0 30 30"><path d="M5 15h20"/><circle cx="15" cy="6.5" r="2.6" stroke="none"/><circle cx="15" cy="23.5" r="2.6" stroke="none"/></svg>',
-    '+': '<svg viewBox="0 0 30 30"><path d="M5 15h20M15 5v20"/></svg>',
-    '=': '<svg viewBox="0 0 30 30"><path d="M5 11h20M5 19h20"/></svg>',
-    ',': '<svg viewBox="0 0 30 30"><circle cx="15" cy="18" r="3.8" stroke="none"/><path d="M18 19l-5 8" stroke-width="3"/></svg>'
-  };
-  const keys = [
-    ['C', 'cl', 'Borrar todo'], ['⌫', '', 'Borrar uno'], ['kg', 'fn'], ['truck', 'fn t'],
-    ['7'], ['8'], ['9'], ['÷', 'op', 'Dividir en productos'],
-    ['4'], ['5'], ['6'], ['+', 'op', 'Sumar'],
-    ['1'], ['2'], ['3'], [',', 'fn', 'Coma: separa bultos, filas, ancho y productos'],
-    ['0'], ['00'], ['=', 'eq', 'Calcular']
-  ];
-  $('qPad').innerHTML = keys.map(([k, cls = '', label = k]) =>
-    `<button class="key ${cls}" data-k="${k}" aria-label="${label}">${sym[k] || (k === 'kg' || k === 'truck' ? '' : k)}</button>`).join('');
   $('qPad').addEventListener('click', ev => {
     const b = ev.target.closest('[data-k]'); if (!b) return;
     const k = b.dataset.k;
+    if (Q.plain) {
+      if (k === '=') { const v = evalMath(Q.math); if (v !== null) { Q.mathPrev = Q.math; Q.math = fmtNum(v); } }
+      else { const n = k === 'C' ? '' : pressMath(Q.math, k); if (n === Q.math && k !== 'C') return; Q.math = n; Q.mathPrev = ''; }
+      qSave(); renderCalc(); return;
+    }
     if (qSel !== null && (k === '⌫' || /^\d+$/.test(k))) {
       const n = editNumber(Q.input, qSel, k, qFresh); qFresh = false;
       if (n !== Q.input) { Q.input = n; Q.shown = false; qSave(); }
@@ -1260,11 +1356,12 @@ function initQuick() {
   addEventListener('resize', () => { if (Q.quick && qScreen === 'calc') renderCalc(); });
   document.addEventListener('keydown', ev => {
     if ($('quick').hidden || qScreen !== 'calc' || ev.ctrlKey || ev.metaKey || ev.altKey) return;
-    const map = { Enter: '=', '=': '=', Backspace: '⌫', Escape: 'C', '/': '÷', '+': '+', ',': ',', '.': ',' };
+    const map = Q.plain ? { Enter: '=', '=': '=', Backspace: '⌫', Escape: 'C', '/': '÷', '*': '×', x: '×', '-': '−', '+': '+', ',': '.', '.': '.', '%': '%' }
+      : { Enter: '=', '=': '=', Backspace: '⌫', Escape: 'C', '/': '÷', '*': '×', x: '×', '+': '+', ',': ',', '.': ',' };
     const k = /^\d$/.test(ev.key) ? ev.key : map[ev.key];
     if (!k) return;
     ev.preventDefault();
-    $('qPad').querySelector(`[data-k="${k}"]`).click();
+    $('qPad').querySelector(`[data-k="${k}"]`)?.click();
   });
 
   $('qDisp').addEventListener('click', ev => {
@@ -1275,6 +1372,10 @@ function initQuick() {
   });
   $('toQuick').addEventListener('click', () => setQuick(true));
   $('toFull').addEventListener('click', () => setQuick(false));
+  document.querySelector('.qsw').addEventListener('click', ev => {
+    const b = ev.target.closest('[data-plain]'); if (!b) return;
+    Q.plain = b.dataset.plain === '1'; qSel = null; qSave(); renderCalc();
+  });
   $('qHist').addEventListener('click', () => { qOpen = null; qGo('history'); });
   $('quick').addEventListener('click', ev => { const b = ev.target.closest('[data-go]'); if (b) qGo(b.dataset.go); });
 
@@ -1300,7 +1401,7 @@ function initQuick() {
     const f = $('qFile').files[0]; $('qFile').value = '';
     if (!f) return;
     let list = null;
-    try { const d = JSON.parse(await f.text()); if (d && d.app === 'cubik' && Array.isArray(d.entries)) list = cleanEntries(d.entries); } catch (e) {}
+    try { const d = JSON.parse(await f.text()); if (d && d.app === 'cubik' && Array.isArray(d.entries)) list = cleanEntries(d.entries, !(d.version >= 2)); } catch (e) {}
     if (!list) { toast('Ese archivo no es un historial de Cubik.'); return; }
     const have = new Set(Q.history.map(e => e.id));
     const fresh = list.filter((e, i) => !have.has(e.id) && list.findIndex(x => x.id === e.id) === i);
@@ -1311,7 +1412,9 @@ function initQuick() {
   $('qDet').addEventListener('click', ev => {
     const e = Q.history.find(x => x.id === qDetailId); if (!e) return;
     const tab = ev.target.closest('#qTabs [data-view]'), row = ev.target.closest('#qView [data-row], #qView [data-sel]');
-    if (tab) { qDetLoad.view = tab.dataset.view; renderDetail(); }
+    const opt = ev.target.closest('[data-opt]');
+    if (opt) { const o = options(entryResult(e).load)[+opt.dataset.opt].load; qDetLoad = { ...o, rows: [...o.rows], view: qDetLoad.view, sel: Math.min(qDetLoad.sel, o.L - 1) }; renderDetail(); }
+    else if (tab) { qDetLoad.view = tab.dataset.view; renderDetail(); }
     else if (row) { qDetLoad.sel = +(row.dataset.row ?? row.dataset.sel); renderDetail(); }
     else if (ev.target.closest('#qUse')) { Object.assign(Q, { input: e.input, kg: e.kg, truck: e.truck, shown: true, lastId: e.id }); qSave(); qGo('calc'); }
     else if (ev.target.closest('#qExpOne')) download([e], dayKey(e.ts));

@@ -1,6 +1,10 @@
 package com.kyrnforge.cubik
 
+import android.app.Activity
 import android.content.Context
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -148,7 +152,7 @@ fun QuickApp(q: QuickStore) {
         }
     }
 
-    Box(Modifier.fillMaxSize().background(C.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
+    Box(Modifier.fillMaxSize().background(if (screen == Screen.Calc) K.bg else C.bg).windowInsetsPadding(WindowInsets.safeDrawing)) {
         Column(Modifier.fillMaxSize().widthIn(max = 560.dp).align(Alignment.TopCenter)) {
             when (val s = screen) {
                 Screen.Calc -> CalcScreen(q, onHistory = { screen = Screen.History })
@@ -208,23 +212,18 @@ private fun ConfirmDialog(text: String, ok: String, onOk: () -> Unit, onCancel: 
 }
 
 fun press(s: String, key: String): String {
-    val last = s.lastOrNull()
-    val digitLast = last?.isDigit() == true
+    val digitLast = s.lastOrNull()?.isDigit() == true
     val token = s.takeLastWhile { it.isDigit() }
     val e = splitExpr(s)
-    val inProducts = e.products != null
+    val inBultos = e.filas == null && e.ancho == null && e.products == null
     if (s.length >= 40 && key != "⌫") return s
     return when (key) {
         "⌫" -> s.dropLast(1)
         "00" -> if (token.isNotEmpty() && token != "0" && token.length <= 2) s + "00" else s
-        "," -> when {
-            !digitLast -> s
-            !inProducts && e.head.size >= 3 -> s
-            inProducts && e.products!!.size >= MAX_PRODUCTS -> s
-            else -> "$s,"
-        }
-        "÷" -> if (digitLast && !inProducts) "$s÷" else s
-        "+" -> if (digitLast && (inProducts || e.head.size == 1)) "$s+" else s
+        "÷" -> if (digitLast && inBultos) "$s÷" else s
+        "×" -> if (digitLast && e.ancho == null && e.products == null) "$s×" else s
+        "," -> if (digitLast && (e.products?.size ?: 0) < MAX_PRODUCTS) "$s," else s
+        "+" -> if (digitLast && (inBultos || e.products != null)) "$s+" else s
         else -> when {
             token.length >= 4 -> s
             token == "0" -> s.dropLast(1) + key
@@ -234,13 +233,46 @@ fun press(s: String, key: String): String {
 }
 
 @Composable
+private fun DarkIcon(d: String, desc: String, onClick: () -> Unit) = Box(
+    Modifier.size(48.dp).clip(R14).background(K.num)
+        .semantics { contentDescription = desc; role = Role.Button }.clickable(onClick = onClick),
+    contentAlignment = Alignment.Center
+) { Icon(d, 26.dp, K.ink, view = 24f) }
+
+/** Interruptor CALCULADORA | BULTOS. */
+@Composable
+private fun RowScope.ModeSwitch(plain: Boolean, onChange: (Boolean) -> Unit) = Row(
+    Modifier.weight(1f).padding(horizontal = 10.dp).height(44.dp).clip(RoundedCornerShape(22.dp)).background(K.num).padding(4.dp)
+) {
+    listOf(true to "CALCULADORA", false to "BULTOS").forEach { (v, label) ->
+        val on = plain == v
+        Box(
+            Modifier.weight(1f).fillMaxSize().clip(RoundedCornerShape(18.dp)).background(if (on) K.op else Color.Transparent)
+                .semantics { role = Role.Tab; contentDescription = label.lowercase() }.clickable { onChange(v) },
+            contentAlignment = Alignment.Center
+        ) { BasicText(label, style = cond(15.sp, if (on) Color.White else K.muted, spacing = 0.06.em)) }
+    }
+}
+
+@Composable
 private fun ColumnScope.CalcScreen(q: QuickStore, onHistory: () -> Unit) {
-    TopBar("CUBIK", "RÁPIDO",
-        left = { TopIcon(HISTORY_ICON, "Historial", onHistory) },
-        right = { TopIcon(TRUCK_ICON, "Pasar al modo completo") { q.switchQuick(false) } })
+    val view = LocalView.current
+    val window = (LocalContext.current as? Activity)?.window
+    // Iconos claros en la barra del sistema mientras se ve la calculadora oscura.
+    DisposableEffect(window) {
+        val c = window?.let { WindowCompat.getInsetsController(it, view) }
+        c?.isAppearanceLightStatusBars = false
+        c?.isAppearanceLightNavigationBars = false
+        onDispose { c?.isAppearanceLightStatusBars = true; c?.isAppearanceLightNavigationBars = true }
+    }
+    Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+        DarkIcon(HISTORY_ICON, "Historial", onHistory)
+        ModeSwitch(q.plain, q::usePlain)
+        DarkIcon(TRUCK_ICON, "Pasar al modo completo") { q.switchQuick(false) }
+    }
     BoxWithConstraints(Modifier.fillMaxWidth().weight(1f)) {
         val padH = maxHeight
-        val result = if (q.shown) calculate(q.input, q.kg, q.truck) else null
+        val result = if (!q.plain && q.shown) calculate(q.input, q.kg, q.truck) else null
         var sel by remember { mutableStateOf<Int?>(null) }
         var fresh by remember { mutableStateOf(false) }
         if (sel != null && sel!! >= numberSpans(q.input).size) sel = null
@@ -249,25 +281,52 @@ private fun ColumnScope.CalcScreen(q: QuickStore, onHistory: () -> Unit) {
         Column(Modifier.fillMaxSize()) {
             BoxWithConstraints(Modifier.fillMaxWidth().weight(1f)) {
                 val dispH = maxHeight
+                // Lo escrito siempre se ve; si el resultado no cabe, solo el resultado se desplaza.
                 Column(
-                    Modifier.fillMaxWidth().heightIn(min = maxHeight).verticalScroll(rememberScrollState(), reverseScrolling = true)
-                        .padding(horizontal = 18.dp, vertical = 8.dp),
+                    Modifier.fillMaxSize().padding(horizontal = 18.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Bottom),
                     horizontalAlignment = Alignment.End
                 ) {
-                    Display(q.input, compact = result != null && dispH < 320.dp, sel = sel) { k ->
-                        sel = if (k == sel) null else k
-                        fresh = true
-                    }
-                    when (result) {
-                        is CalcResult.Ok -> ResultCard(result)
-                        is CalcResult.Error -> ErrorCard(result)
-                        null -> {}
+                    if (q.plain) MathDisplay(q.math, q.mathPrev)
+                    else {
+                        Display(q.input, compact = result != null && dispH < 420.dp, sel = sel) { k ->
+                            sel = if (k == sel) null else k
+                            fresh = true
+                        }
+                        val scroll = Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())
+                        when (result) {
+                            is CalcResult.Ok -> Box(scroll) { ResultCard(result, DARK) }
+                            is CalcResult.Error -> Box(scroll) { ErrorCard(result, DARK) }
+                            null -> {}
+                        }
                     }
                 }
             }
-            Keypad(q, keyH, sel, fresh) { k, f -> sel = k; fresh = f }
+            if (q.plain) MathKeypad(q, keyH) else Keypad(q, keyH, sel, fresh) { k, f -> sel = k; fresh = f }
         }
+    }
+}
+
+private fun inputSize(len: Int) = when {
+    len <= 8 -> 66.sp
+    len <= 11 -> 56.sp
+    len <= 14 -> 46.sp
+    len <= 18 -> 38.sp
+    else -> 32.sp
+}
+
+@Composable
+private fun MathDisplay(input: String, prev: String) {
+    if (prev.isNotEmpty()) BasicText(colored(prev, dark = true), style = cond(26.sp, K.muted, FontWeight.Bold).copy(textAlign = TextAlign.End))
+    val size = inputSize(input.length) * textScale()
+    BasicText(
+        colored(input.ifEmpty { "0" }, dark = true),
+        style = cond(size, K.ink, FontWeight.Bold).copy(textAlign = TextAlign.End, lineHeight = size * 1.05f),
+        modifier = Modifier.semantics { contentDescription = "Escrito: ${input.ifEmpty { "0" }}" }
+    )
+    // Resultado en vivo mientras se escribe, como las calculadoras del teléfono.
+    if (prev.isEmpty() && input.any { it in OPS || it == '%' }) evalMath(input)?.let {
+        BasicText("= ${fmtNum(it)}", style = cond(30.sp, K.muted, FontWeight.Bold).copy(textAlign = TextAlign.End))
     }
 }
 
@@ -275,169 +334,155 @@ private fun ColumnScope.CalcScreen(q: QuickStore, onHistory: () -> Unit) {
 private fun Display(input: String, compact: Boolean, sel: Int?, onTap: (Int?) -> Unit) {
     val e = splitExpr(input)
     Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-        val labels = listOf("BULTOS", "FILAS", "ANCHO").take(e.head.size.coerceAtLeast(1))
-        labels.forEach { BasicText(it, style = body(12.sp, C.muted, FontWeight.Bold).copy(letterSpacing = 0.08.em)) }
-        if (e.products != null) BasicText("PRODUCTOS", style = body(12.sp, C.traba, FontWeight.Bold).copy(letterSpacing = 0.08.em))
+        val labels = listOfNotNull("BULTOS", e.filas?.let { "FILAS" }, e.ancho?.let { "ANCHO" })
+        labels.forEach { BasicText(it, style = body(12.sp, K.muted, FontWeight.Bold).copy(letterSpacing = 0.08.em)) }
+        if (e.products != null) BasicText("PRODUCTOS", style = body(12.sp, K.op, FontWeight.Bold).copy(letterSpacing = 0.08.em))
     }
-    val size = when {
-        input.length <= 8 -> 66.sp
-        input.length <= 11 -> 56.sp
-        input.length <= 14 -> 46.sp
-        input.length <= 18 -> 38.sp
-        else -> 32.sp
-    }.let { if (compact && it.value > 34f) 34.sp else it } * textScale()
+    val size = inputSize(input.length).let { if (compact && it.value > 34f) 34.sp else it } * textScale()
     if (input.isEmpty()) {
-        BasicText("0", style = cond(66.sp, C.line).copy(textAlign = TextAlign.End))
-        BasicText("Escriba bultos,filas,ancho y toque =", style = body(14.sp, C.muted))
+        BasicText("0", style = cond(66.sp, K.line).copy(textAlign = TextAlign.End))
+        BasicText("Bultos ÷ filas × ancho , productos", style = body(14.sp, K.muted))
     } else {
         var layout by remember { mutableStateOf<TextLayoutResult?>(null) }
         BasicText(
-            colored(input, sel?.let { numberSpans(input).getOrNull(it) }),
-            style = cond(size).copy(textAlign = TextAlign.End, lineHeight = size * 1.05f),
+            colored(input, sel?.let { numberSpans(input).getOrNull(it) }, dark = true),
+            style = cond(size, K.ink).copy(textAlign = TextAlign.End, lineHeight = size * 1.05f),
             onTextLayout = { layout = it },
             modifier = Modifier.semantics { contentDescription = "Escrito: $input. Toque un número para cambiarlo." }
                 .pointerInput(input) {
                     detectTapGestures { pos -> layout?.let { onTap(numberAt(input, it.getOffsetForPosition(pos))) } }
                 }
         )
-        if (sel != null) BasicText("Cambiando ${numberName(input, sel)} · toque = para calcular", style = body(13.sp, C.traba, FontWeight.Bold))
-        else if (!compact) BasicText("Toque un número para cambiarlo", style = body(13.sp, C.muted, FontWeight.Bold))
+        if (sel != null) BasicText("Cambiando ${numberName(input, sel)} · toque = para calcular", style = body(13.sp, K.op, FontWeight.Bold))
+        else if (!compact) BasicText("Toque un número para cambiarlo", style = body(13.sp, K.muted, FontWeight.Bold))
     }
 }
 
-private fun colored(input: String, sel: IntRange? = null) = buildAnnotatedString {
+private fun colored(input: String, sel: IntRange? = null, dark: Boolean = false) = buildAnnotatedString {
+    val sign = if (dark) K.op else C.traba
     input.forEachIndexed { i, ch ->
         when {
-            sel != null && i in sel -> withStyle(SpanStyle(background = C.sel, color = C.trabaDk, textDecoration = TextDecoration.Underline)) { append(ch) }
-            else -> when (ch) {
-            ',' -> withStyle(SpanStyle(color = C.kraftDk)) { append(ch) }
-            '÷', '+' -> withStyle(SpanStyle(color = C.traba)) { append(ch) }
+            sel != null && i in sel -> withStyle(SpanStyle(background = if (dark) K.sel else C.sel, color = sign, textDecoration = TextDecoration.Underline)) { append(ch) }
+            ch in "÷×+−,%" -> withStyle(SpanStyle(color = sign)) { append(ch) }
             else -> append(ch)
-            }
         }
     }
 }
 
+/** Opciones A, B y C una debajo de otra y, al final, los productos. En el historial se toca una para dibujarla. */
 @Composable
-private fun ResultBox(border: Color = C.line, bg: Color = C.card, content: @Composable ColumnScope.() -> Unit) = Column(
-    Modifier.fillMaxWidth().background(bg, R14).border(2.dp, border, R14).padding(horizontal = 12.dp, vertical = 10.dp),
-    verticalArrangement = Arrangement.spacedBy(2.dp),
-    content = content
-)
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun ResultCard(r: CalcResult.Ok) = ResultBox {
+fun ResultCard(r: CalcResult.Ok, p: Pal = LIGHT, picked: Load? = null, onPick: ((Load) -> Unit)? = null) = Column(
+    Modifier.fillMaxWidth().background(p.card, R14).border(2.dp, p.line, R14).padding(horizontal = 12.dp, vertical = 10.dp),
+    verticalArrangement = Arrangement.spacedBy(4.dp)
+) {
     val s = r.load
     val b = s.balance()
-    FlowRow(Modifier.fillMaxWidth().padding(bottom = 2.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-        BasicText("${s.truck.label} · ${fmtT(s.tons)} t · ${s.kg} kg", style = body(14.sp, C.muted, FontWeight.Bold), softWrap = false, modifier = Modifier.padding(end = 8.dp))
-        BasicText(
-            if (b.ok) "Parejo ${b.front}/${b.back} ✓" else "Recostado ${b.front}/${b.back}",
-            style = body(14.sp, if (b.ok) C.green else C.red, FontWeight.Bold), softWrap = false
-        )
-    }
-    if (s.over) Warn("Pasa de ${fmtT(s.truck.tons)} t ${s.truck.deName} (máx. ${s.maxBags} bultos)")
-    val maxTop = s.layout().maxOf { it.height }
-    if (maxTop > s.truck.techo) Warn("$maxTop pisos pasan la baranda (${s.truck.techo})")
     val ts = textScale()
-    val lines = s.rowLines()
-    if (r.products.isEmpty()) lines.forEach { RowText(it, legend = false, size = 20.sp * ts) }
-    else {
-        Divider()
-        val what = s.productText(r.products)
-        r.products.forEachIndexed { i, p ->
-            Column(Modifier.padding(vertical = 2.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.size(14.dp).background(PRODUCT_COLORS[i % PRODUCT_COLORS.size], RoundedCornerShape(4.dp)))
-                    Spacer(Modifier.width(8.dp))
-                    BasicText(productLabel(i, p), style = cond(17.sp * ts, C.muted, FontWeight.Bold))
-                    if (p.rest) {
-                        Spacer(Modifier.width(6.dp))
-                        BasicText("RESTO", style = body(11.sp, C.traba, FontWeight.Bold),
-                            modifier = Modifier.border(1.5.dp, C.traba, RoundedCornerShape(6.dp)).padding(horizontal = 5.dp, vertical = 1.dp))
+    Row(Modifier.fillMaxWidth()) {
+        BasicText("${s.truck.label} · ${fmtT(s.tons)} t · ${s.kg} kg", style = body(14.sp, p.muted, FontWeight.Bold), modifier = Modifier.weight(1f))
+        BasicText(if (b.ok) "Parejo ✓" else "Recostado", style = body(14.sp, if (b.ok) p.green else p.red, FontWeight.Bold), softWrap = false)
+    }
+    if (s.over) Warn("Pasa de ${fmtT(s.truck.tons)} t ${s.truck.deName} (máx. ${s.maxBags} bultos)", p.red)
+    val maxTop = s.layout().maxOf { it.height }
+    if (maxTop > s.truck.techo) Warn("$maxTop pisos pasan la baranda (${s.truck.techo})", p.red)
+    val opts = s.options()
+    val cur = picked ?: opts[0].load
+    opts.forEach { o ->
+        val l = o.load
+        val on = onPick != null && l.rows == cur.rows
+        Row(
+            Modifier.fillMaxWidth().clip(R12).background(if (on) p.pick else Color.Transparent)
+                .then(if (onPick != null) Modifier.clickable { onPick(l) } else Modifier).padding(horizontal = 4.dp, vertical = 4.dp)
+        ) {
+            BasicText(o.tag, style = cond(26.sp * ts, p.accent), modifier = Modifier.width(30.dp))
+            Column(Modifier.weight(1f)) {
+                val g = linkedMapOf<Int, Int>()
+                l.rows.forEach { g[it] = (g[it] ?: 0) + 1 }
+                g.forEach { (n, c) ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        BasicText("$c ${plural(c, "fila", "filas")} › $n", style = cond(23.sp * ts, p.ink, FontWeight.Bold), modifier = Modifier.padding(end = 10.dp))
+                        BasicText(l.pisosText(n), style = body(13.sp * ts, p.muted, FontWeight.Bold))
                     }
                 }
-                // Solo se corta la línea en los "+", nunca dentro de "en fila 5".
-                BasicText(what[i].split(" + ").joinToString(" + ") { it.replace(' ', ' ') }, style = cond(19.sp * ts, weight = FontWeight.Bold), modifier = Modifier.padding(start = 22.dp))
             }
         }
-        Divider()
-        lines.filter { it.n > 0 }.forEach { RowText(it, legend = true, size = 17.sp * ts) }
+    }
+    if (r.products.isNotEmpty()) {
+        Box(Modifier.fillMaxWidth().padding(vertical = 4.dp).height(2.dp).background(p.line))
+        val what = cur.productText(r.products)
+        r.products.forEachIndexed { i, pr ->
+            Row(Modifier.padding(vertical = 2.dp)) {
+                Box(Modifier.padding(top = 5.dp).size(12.dp).background(PRODUCT_COLORS[i % PRODUCT_COLORS.size], RoundedCornerShape(3.dp)).border(1.dp, p.muted, RoundedCornerShape(3.dp)))
+                Spacer(Modifier.width(8.dp))
+                // Solo se corta la línea en los "+", nunca dentro de "en fila 5".
+                BasicText(buildAnnotatedString {
+                    withStyle(SpanStyle(color = p.accent)) { append("P${i + 1} ${pr.n}") }
+                    if (pr.rest) withStyle(SpanStyle(color = p.muted)) { append(" resto") }
+                    append(" › ")
+                    append(what[i].split(" + ").joinToString(" + ") { it.replace(' ', ' ') })
+                }, style = cond(18.sp * ts, p.ink, FontWeight.Bold))
+            }
+        }
     }
 }
-
-@Composable
-private fun RowText(line: RowLine, legend: Boolean, size: TextUnit) = BasicText(
-    buildAnnotatedString {
-        append("${line.count} ${plural(line.count, "fila", "filas")}" + if (legend) " de " else " → ")
-        append(line.main)
-        line.top?.let { append(" + "); withStyle(SpanStyle(color = C.traba)) { append(it) } }
-    },
-    style = cond(size, weight = FontWeight.Bold)
-)
-
-@Composable
-private fun Divider() = Box(Modifier.fillMaxWidth().padding(vertical = 6.dp).height(2.dp).background(C.line))
 
 @Composable
 private fun textScale() = (LocalConfiguration.current.screenWidthDp / 380f).coerceIn(0.85f, 1f)
 
 @Composable
-private fun Warn(text: String) = BasicText("⚠ $text", style = body(14.sp, C.red, FontWeight.Bold))
+private fun Warn(text: String, color: Color) = BasicText("⚠ $text", style = body(14.sp, color, FontWeight.Bold))
 
 @Composable
-private fun ErrorCard(r: CalcResult.Error) = ResultBox(C.red, C.redBg) {
-    BasicText(r.text, style = cond(20.sp, C.red, FontWeight.Bold))
-    BasicText(r.hint, style = body(14.sp, C.muted))
+private fun ErrorCard(r: CalcResult.Error, p: Pal = LIGHT) = Column(
+    Modifier.fillMaxWidth().background(p.card, R14).border(2.dp, p.red, R14).padding(horizontal = 12.dp, vertical = 10.dp),
+    verticalArrangement = Arrangement.spacedBy(2.dp)
+) {
+    BasicText(r.text, style = cond(20.sp, p.red, FontWeight.Bold))
+    BasicText(r.hint, style = body(14.sp, p.muted))
 }
 
-private enum class KeyKind { NUM, OP, FN, CLEAR, EQ }
+private enum class KeyKind { NUM, FN, OP }
 
 @Composable
-private fun RowScope.Key(label: String, kind: KeyKind, h: Dp, sub: String? = null, desc: String = label, span: Float = 1f, size: TextUnit? = null, onClick: () -> Unit) {
+private fun RowScope.Key(label: String, kind: KeyKind, h: Dp, sub: String? = null, desc: String = label, size: TextUnit? = null, onClick: () -> Unit) {
     val src = remember { MutableInteractionSource() }
     val down by src.collectIsPressedAsState()
-    val (bg, edge, fg) = when (kind) {
-        KeyKind.NUM -> Triple(C.card, C.line, C.ink)
-        KeyKind.CLEAR -> Triple(C.card, C.line, C.red)
-        KeyKind.OP -> Triple(C.steel, C.ink, Color.White)
-        KeyKind.FN -> Triple(C.sel, C.kraftDk, C.ink)
-        KeyKind.EQ -> Triple(C.traba, C.trabaDk, Color.White)
-    }
+    val bg = when (kind) { KeyKind.NUM -> K.num; KeyKind.FN -> K.fn; KeyKind.OP -> K.op }
     Box(
-        Modifier.weight(span).height(h).offset(y = if (down) 2.dp else 0.dp)
-            .background(edge, R16).padding(bottom = if (down) 1.dp else 3.dp)
-            .clip(R16).background(bg).border(2.dp, edge, R16)
+        Modifier.weight(1f).height(h).clip(RoundedCornerShape(h / 2.6f)).background(if (down) bg.copy(alpha = 0.7f) else bg)
             .semantics { contentDescription = desc; role = Role.Button }
             .clickable(interactionSource = src, indication = null, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            if (label in SYMBOLS) Symbol(label, fg, if (h < 56.dp) 24.dp else 30.dp)
+            if (label in SYMBOLS) Symbol(label, Color.White, if (h < 56.dp) 22.dp else 28.dp)
             else {
-                val tight = sub != null && h < 56.dp
-                val sz = (size ?: if (h < 56.dp) 28.sp else 34.sp) * (if (tight) 0.82f else 1f)
-                BasicText(label, style = cond(sz, fg).copy(lineHeight = sz * (if (tight) 1f else 1.15f)))
+                val sz = (size ?: if (h < 56.dp) 28.sp else 34.sp) * (if (sub != null && h < 56.dp) 0.82f else 1f)
+                BasicText(label, style = cond(sz, Color.White, FontWeight.Bold).copy(lineHeight = sz * 1.1f))
             }
-            if (sub != null) BasicText(sub, style = body(if (h < 56.dp) 9.sp else 10.sp, C.kraftEdge, FontWeight.Bold)
+            if (sub != null) BasicText(sub, style = body(if (h < 56.dp) 9.sp else 10.sp, Color.White.copy(alpha = 0.75f), FontWeight.Bold)
                 .copy(letterSpacing = 0.08.em, lineHeight = if (h < 56.dp) 10.sp else 13.sp))
         }
     }
 }
 
-private val SYMBOLS = setOf("÷", "+", ",", "=")
+private val SYMBOLS = setOf("÷", "×", "+", "−", ",", "=")
 
 /** Los signos se dibujan para que se vean grandes y centrados con cualquier fuente. */
 @Composable
 private fun Symbol(k: String, color: Color, size: Dp) = Canvas(Modifier.size(size)) {
     val u = this.size.width
-    val w = u * 0.13f
+    val w = u * 0.12f
     val c = u / 2
-    fun bar(y: Float) = drawLine(color, Offset(u * 0.12f, y), Offset(u * 0.88f, y), w, StrokeCap.Round)
+    fun bar(y: Float) = drawLine(color, Offset(u * 0.14f, y), Offset(u * 0.86f, y), w, StrokeCap.Round)
     when (k) {
-        "+" -> { bar(c); drawLine(color, Offset(c, u * 0.12f), Offset(c, u * 0.88f), w, StrokeCap.Round) }
+        "+" -> { bar(c); drawLine(color, Offset(c, u * 0.14f), Offset(c, u * 0.86f), w, StrokeCap.Round) }
+        "−" -> bar(c)
         "=" -> { bar(u * 0.36f); bar(u * 0.64f) }
+        "×" -> {
+            drawLine(color, Offset(u * 0.22f, u * 0.22f), Offset(u * 0.78f, u * 0.78f), w, StrokeCap.Round)
+            drawLine(color, Offset(u * 0.78f, u * 0.22f), Offset(u * 0.22f, u * 0.78f), w, StrokeCap.Round)
+        }
         "÷" -> { bar(c); drawCircle(color, w * 0.85f, Offset(c, u * 0.2f)); drawCircle(color, w * 0.85f, Offset(c, u * 0.8f)) }
         "," -> {
             drawCircle(color, u * 0.13f, Offset(c, u * 0.62f))
@@ -447,6 +492,15 @@ private fun Symbol(k: String, color: Color, size: Dp) = Canvas(Modifier.size(siz
 }
 
 @Composable
+private fun Pad(content: @Composable ColumnScope.() -> Unit) = Column(
+    Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
+    verticalArrangement = Arrangement.spacedBy(10.dp),
+    content = content
+)
+
+private val GAP = Arrangement.spacedBy(10.dp)
+
+@Composable
 private fun Keypad(q: QuickStore, h: Dp, sel: Int?, fresh: Boolean, onSel: (Int?, Boolean) -> Unit) {
     fun t(k: String) {
         val n = if (sel != null && (k == "⌫" || k.all { it.isDigit() })) editNumber(q.input, sel, k, fresh).also { onSel(sel, false) }
@@ -454,35 +508,58 @@ private fun Keypad(q: QuickStore, h: Dp, sel: Int?, fresh: Boolean, onSel: (Int?
         if (n != q.input) q.type(n)
     }
     val truckLabel = when (q.truck) { null -> "AUTO"; Truck.DOBLE -> "DOBLE"; else -> q.truck!!.label.uppercase() }
-    Column(
-        Modifier.fillMaxWidth().background(C.win.copy(alpha = 0.55f))
-            .padding(horizontal = 14.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(9.dp)
-    ) {
-        val gap = Arrangement.spacedBy(9.dp)
-        Row(horizontalArrangement = gap) {
-            Key("C", KeyKind.CLEAR, h, desc = "Borrar todo") { onSel(null, false); q.clear() }
-            Key("⌫", KeyKind.NUM, h, desc = "Borrar uno") { t("⌫") }
+    Pad {
+        Row(horizontalArrangement = GAP) {
+            Key("C", KeyKind.FN, h, desc = "Borrar todo") { onSel(null, false); q.clear() }
+            Key("⌫", KeyKind.FN, h, desc = "Borrar uno") { t("⌫") }
             Key("${q.kg}", KeyKind.FN, h, sub = "KG", desc = "Peso del bulto: ${q.kg} kilos", size = 26.sp) { q.cycleKg() }
             Key(truckLabel, KeyKind.FN, h, sub = "CAMIÓN", desc = "Camión: ${q.truck?.label ?: "automático"}",
                 size = if (truckLabel.length > 6) 17.sp else 22.sp) { q.cycleTruck() }
         }
-        Row(horizontalArrangement = gap) {
+        Row(horizontalArrangement = GAP) {
             listOf("7", "8", "9").forEach { Key(it, KeyKind.NUM, h) { t(it) } }
-            Key("÷", KeyKind.OP, h, desc = "Dividir en productos") { t("÷") }
+            Key("÷", KeyKind.OP, h, sub = "FILAS", desc = "Filas de fondo a compuerta") { t("÷") }
         }
-        Row(horizontalArrangement = gap) {
+        Row(horizontalArrangement = GAP) {
             listOf("4", "5", "6").forEach { Key(it, KeyKind.NUM, h) { t(it) } }
+            Key("×", KeyKind.OP, h, sub = "ANCHO", desc = "Bultos a lo ancho") { t("×") }
+        }
+        Row(horizontalArrangement = GAP) {
+            listOf("1", "2", "3").forEach { Key(it, KeyKind.NUM, h) { t(it) } }
             Key("+", KeyKind.OP, h, desc = "Sumar") { t("+") }
         }
-        Row(horizontalArrangement = gap) {
-            listOf("1", "2", "3").forEach { Key(it, KeyKind.NUM, h) { t(it) } }
-            Key(",", KeyKind.FN, h, desc = "Coma: separa bultos, filas, ancho y productos") { t(",") }
-        }
-        Row(horizontalArrangement = gap) {
+        Row(horizontalArrangement = GAP) {
             Key("0", KeyKind.NUM, h) { t("0") }
             Key("00", KeyKind.NUM, h) { t("00") }
-            Key("=", KeyKind.EQ, h, span = 2.09f, desc = "Calcular") { onSel(null, false); q.equals() }
+            Key(",", KeyKind.FN, h, sub = "PRODUCTO", desc = "Coma: agrega un producto") { t(",") }
+            Key("=", KeyKind.OP, h, desc = "Calcular") { onSel(null, false); q.equals() }
+        }
+    }
+}
+
+private val OP_NAMES = mapOf("×" to "Multiplicar", "−" to "Restar", "+" to "Sumar")
+
+@Composable
+private fun MathKeypad(q: QuickStore, h: Dp) {
+    fun t(k: String) { val n = pressMath(q.math, k); if (n != q.math) q.typeMath(n) }
+    Pad {
+        Row(horizontalArrangement = GAP) {
+            Key("C", KeyKind.FN, h, desc = "Borrar todo") { q.typeMath("") }
+            Key("⌫", KeyKind.FN, h, desc = "Borrar uno") { t("⌫") }
+            Key("%", KeyKind.FN, h, desc = "Por ciento") { t("%") }
+            Key("÷", KeyKind.OP, h, desc = "Dividir") { t("÷") }
+        }
+        listOf("789" to "×", "456" to "−", "123" to "+").forEach { (nums, op) ->
+            Row(horizontalArrangement = GAP) {
+                nums.forEach { d -> Key("$d", KeyKind.NUM, h) { t("$d") } }
+                Key(op, KeyKind.OP, h, desc = OP_NAMES.getValue(op)) { t(op) }
+            }
+        }
+        Row(horizontalArrangement = GAP) {
+            Key("0", KeyKind.NUM, h) { t("0") }
+            Key("00", KeyKind.NUM, h) { t("00") }
+            Key(".", KeyKind.NUM, h, desc = "Punto decimal") { t(".") }
+            Key("=", KeyKind.OP, h, desc = "Resultado") { q.mathEquals() }
         }
     }
 }
@@ -596,7 +673,7 @@ private fun ColumnScope.HistoryScreen(
 private fun ColumnScope.DetailScreen(e: Entry, onBack: () -> Unit, onUse: () -> Unit, onExport: () -> Unit, onDelete: () -> Unit) {
     val ctx = LocalContext.current
     val r = e.result()
-    var load by remember(e) { mutableStateOf((r as? CalcResult.Ok)?.load) }
+    var load by remember(e) { mutableStateOf((r as? CalcResult.Ok)?.load?.options()?.first()?.load) }
     TopBar("CÁLCULO", "${dayLabel(dayKey(e.ts))} · ${hourTxt(e.ts)}".uppercase(),
         left = { TopIcon(BACK_ICON, "Volver al historial", onBack) },
         right = { Spacer(Modifier.size(52.dp)) })
@@ -607,10 +684,10 @@ private fun ColumnScope.DetailScreen(e: Entry, onBack: () -> Unit, onUse: () -> 
         BasicText(colored(e.input), style = cond(if (e.input.length > 16) 32.sp else 40.sp).copy(textAlign = TextAlign.End), modifier = Modifier.fillMaxWidth())
         when (r) {
             is CalcResult.Ok -> {
-                ResultCard(r)
+                ResultCard(r, picked = load) { o -> load = o.copy(view = load?.view ?: o.view, sel = minOf(load?.sel ?: 0, o.l - 1)) }
                 load?.let { l -> ViewsCard(l) { f -> load = f(l) } }
                 Btn("Compartir por WhatsApp", Modifier.fillMaxWidth(), height = 60.dp, size = 22.sp, bg = C.green,
-                    icon = { Icon(WA_ICON, 24.dp, Color.White, 24f, filled = true) }) { shareWhatsApp(ctx, r.load.quickShareText(r.products)) }
+                    icon = { Icon(WA_ICON, 24.dp, Color.White, 24f, filled = true) }) { shareWhatsApp(ctx, (load ?: r.load).quickShareText(r.products)) }
             }
             is CalcResult.Error -> ErrorCard(r)
         }

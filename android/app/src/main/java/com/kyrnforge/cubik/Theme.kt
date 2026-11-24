@@ -34,6 +34,27 @@ object C {
     val cabLine = Color(0xFF59636B)
 }
 
+/** Calculadora: oscura con operadores naranjas. */
+object K {
+    val bg = Color(0xFF111214)
+    val card = Color(0xFF1C1D20)
+    val num = Color(0xFF2D2F33)
+    val fn = Color(0xFF505359)
+    val op = Color(0xFFFF9500)
+    val ink = Color(0xFFF5F5F7)
+    val muted = Color(0xFF9A9DA3)
+    val line = Color(0xFF34363B)
+    val red = Color(0xFFFF6B5E)
+    val green = Color(0xFF4CD97B)
+    val sel = Color(0xFF4A3A1C)
+}
+
+/** Colores del resultado: claros en el historial, oscuros en la calculadora. */
+data class Pal(val card: Color, val line: Color, val ink: Color, val muted: Color, val accent: Color, val red: Color, val green: Color, val pick: Color)
+
+val LIGHT = Pal(C.card, C.line, C.ink, C.muted, C.traba, C.red, C.green, C.sel)
+val DARK = Pal(K.card, K.line, K.ink, K.muted, K.op, K.red, K.green, K.sel)
+
 val Body = FontFamily(
     Font(R.font.barlow_medium, FontWeight.Medium),
     Font(R.font.barlow_semibold, FontWeight.SemiBold),
